@@ -1,0 +1,21 @@
+{
+  "name": "frontEnd",
+  "homepage": "https://github.com/DustinGuthrie/groupProject_Team2",
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "underscore": "~1.8.3",
+    "bootstrap": "~3.3.5"
+  }
+}

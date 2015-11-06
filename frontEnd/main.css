@@ -1,0 +1,15 @@
+.hidden {
+  display: none; }
+
+header {
+  width: 100%;
+  padding: 0px; }
+
+.noPadding {
+  padding: 0px; }
+
+#homeStats {
+  text-align: center; }
+
+.homePage {
+  max-height: 600px; }
