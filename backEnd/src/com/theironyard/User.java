@@ -5,18 +5,22 @@ package com.theironyard;
  */
 public class User {
     int id;
-    String username;
     String password;
     boolean admin;
+    String ip;
+    boolean access;
+    String picture;
 
     public User(){
 
     }
 
-    public User(int id, String username, String password, boolean admin) {
+    public User(int id, String password, boolean admin, String ip, boolean access, String picture) {
         this.id = id;
-        this.username = username;
         this.password = password;
         this.admin = admin;
+        this.ip = ip;
+        this.access = access;
+        this.picture = picture;
     }
 }
