@@ -20,7 +20,7 @@ public class MainTest {
     public void endConnection(Connection con) throws SQLException {
 
         Statement stm = con.createStatement();
-        stm.execute("DROP TABLE people");
+        stm.execute("DROP TABLE crime");
         con.close();
     }
 
@@ -28,7 +28,7 @@ public class MainTest {
     public void populate() throws SQLException {
         Connection con = startConnection();
         Main.populateDatabase(con);
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM people");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM crime");
         ArrayList<Crime> crimes = new ArrayList<>();
         ResultSet results = stm.executeQuery();
         while (results.next()) {
@@ -46,6 +46,21 @@ public class MainTest {
             crimes.add(crime);
         }
         endConnection(con);
+    }
+
+    @Test
+    public void selectCrime() throws SQLException {
+        Connection con = startConnection();
+        Main.createTables(con);
+        Crime p = new Crime("AK","Alaska",2008,686293,4475,27,447,645,3356, 0);
+        Crime q = new Crime("AK","Alaska",2008,686293,4475,27,447,645,3356, 0);
+        Main.insertCrime(con, p);
+        Main.insertCrime(con, q);
+        ArrayList<Crime> crimes = Main.selectAll(con);
+        endConnection(con);
+
+        assertTrue(crimes.size() == 2);
+
     }
     
 }
