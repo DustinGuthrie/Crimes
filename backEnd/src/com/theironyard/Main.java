@@ -181,10 +181,12 @@ public class Main {
         populateDatabase(con);
 
         Spark.get(
-                "/home",
+                "/",
                 ((request, response) -> {
+                    ArrayList<Crime> crime = selectAll(con);
                     JsonSerializer serializer = new JsonSerializer();
-                    return serializer.serialize(selectAll(con));
+                    System.out.println(selectAll(con));
+                    return serializer.serialize(crime);
                 })
         );
 
