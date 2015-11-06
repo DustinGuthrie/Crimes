@@ -20,7 +20,7 @@ public class Main {
         stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, reply_id INT, username VARCHAR, " +
                 "text VARCHAR, rating INT");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR,, year INT, population INT," +
-                "total INT, murder INT, manslaughter INT, rape INT, robbery INT, assault INT)");
+                "total INT, murder INT, rape INT, robbery INT, assault INT, forum INT)");
     }
 
     public static void insertUser(Connection con, String password, boolean admin, String ip, boolean access, String picture) throws SQLException {
@@ -114,26 +114,6 @@ public class Main {
         return crime;
     }
 
-    public static ArrayList<Crime> selectStateCrimes(Connection con, String name) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM crime WHERE name = ?");
-        stm.setString(1, name);
-        ArrayList<Crime> crimes = new ArrayList();
-        ResultSet results = stm.executeQuery();
-        while(results.next()){
-            Crime crime = new Crime();
-            crime.abbrev = results.getString("abbrev");
-            crime.year = results.getInt("year");
-            crime.population = results.getInt("population");
-            crime.total = results.getInt("total");
-            crime.murder = results.getInt("murder");
-            crime.rape = results.getInt("rape");
-            crime.robbery = results.getInt("robbery");
-            crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
-            crimes.add(crime);
-        }
-        return crimes;
-    }
 
     public static void insertMessage(Connection con, int id, int replyId, String username, String text, int rating) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?)");
