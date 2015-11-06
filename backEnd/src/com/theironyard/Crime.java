@@ -42,4 +42,45 @@ public class Crime {
         this.assault = assault;
         this.forum = forum;
     }
+
+    public String getName() {
+
+        return name;
+    }
+    public String getAbbrev() {
+
+        return abbrev;
+    }
+    public int getYear() {
+
+        return year;
+    }
+    public int getPopulation() {
+
+        return population;
+    }
+    public int getTotal() {
+
+        return total;
+    }
+    public int getMurder() {
+
+        return murder;
+    }
+    public int getRape() {
+
+        return rape;
+    }
+    public int getRobbery() {
+
+        return robbery;
+    }
+    public int getAssault() {
+
+        return assault;
+    }
+    public int getForum() {
+
+        return forum;
+    }
 }
