@@ -7,26 +7,31 @@ public class User {
     int id;
     String username;
     String password;
-    boolean admin;
-    boolean access;
     String ip;
-    int postCount;
+    int postCount = 0;
+    boolean access = true;
+    boolean admin = false;
 
     public User(){
 
     }
 
-    public User(int id, String username, String password, boolean admin, boolean access, String ip, int postCount) {
+    public User(String username, String password, String ip) {
+
+        this.username = username;
+        this.password = password;
+        this.ip = ip;
+    }
+    public User(int id, String username, String password, String ip, int postCount, boolean access, boolean admin) {
 
         this.id = id;
         this.username = username;
         this.password = password;
-        this.admin = admin;
-        this.access = access;
         this.ip = ip;
         this.postCount = postCount;
+        this.access = access;
+        this.admin = admin;
     }
-
     public int getId() {
 
         return id;
