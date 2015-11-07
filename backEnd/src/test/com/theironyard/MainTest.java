@@ -62,5 +62,12 @@ public class MainTest {
         assertTrue(crimes.size() == 2);
 
     }
+
+    @Test
+    public void selectYear() throws SQLException {
+        Connection con = startConnection();
+        Main.createTables(con);
+
+    }
     
 }

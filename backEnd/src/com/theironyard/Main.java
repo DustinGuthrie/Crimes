@@ -140,6 +140,7 @@ public class Main {
         Connection con = DriverManager.getConnection("jdbc:h2:./main");
         createTables(con);
         populateDatabase(con);
+        Spark.externalStaticFileLocation("frontEnd");
 
         Spark.get(
                 "/",
