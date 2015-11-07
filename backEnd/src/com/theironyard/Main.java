@@ -11,14 +11,16 @@ import java.util.ArrayList;
  * Created by Agronis on 11/5/15.
  */
 public class Main {
-
+    // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT, forum INT)");
+        stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
+        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, replyID INT, username VARCHAR, rating INT, text VARCHAR, time TIMESTAMP");
     }
 
-
+    // Inserting individual crime's into SQL Table "crime"
     public static void insertCrime(Connection con, Crime c) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         stm.setString(1, c.name);
@@ -34,6 +36,37 @@ public class Main {
         stm.execute();
 
     }
+
+    // Method used to read CSV dump.
+    static String readFile(String fileName) {
+        File f = new File(fileName);
+        try {
+            FileReader fr = new FileReader(f);
+            int fileSize = (int) f.length();
+            char[] fileContent = new char[fileSize];
+            fr.read(fileContent);
+            return new String(fileContent);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // Method to parse CSV dump and populate database.
+    public static void populateDatabase(Connection con) throws SQLException {
+        String fileContent = readFile("backEnd/dump.csv");
+
+        String[] lines = fileContent.split("\r");
+
+        for (String line : lines) {
+            String[] columns = line.split(",");
+            Crime crime = new Crime(columns[0], columns[1], Integer.valueOf(columns[2]),
+                    Integer.valueOf(columns[3]), Integer.valueOf(columns[4]), Integer.valueOf(columns[5]), Integer.valueOf(columns[6]),
+                    Integer.valueOf(columns[7]), Integer.valueOf(columns[8]));
+            insertCrime(con, crime);
+        }
+    }
+
+    // Selecting an entire State's listing of crimes for all years.
     public static ArrayList<Crime> selectStateCrimes(Connection conn, String name) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE name = ?");
         stm.setString(1, name);
@@ -56,6 +89,7 @@ public class Main {
         return crimes;
     }
 
+    // Selecting ALL crimes from the SQL table.
     public static ArrayList<Crime> selectAll(Connection conn) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime");
         ArrayList<Crime> crimes = new ArrayList();
@@ -77,7 +111,7 @@ public class Main {
         return crimes;
     }
 
-
+    // Selecting crimes strictly for one year from one state.
     public static Crime selectYear(Connection conn, int year, String name) throws SQLException {
         Crime crime = null;
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?, name = ?");
@@ -99,6 +133,8 @@ public class Main {
         }
         return crime;
     }
+
+    // Selecting all crime's for all state's for a particular year.
     public static ArrayList<Crime> selectYears(Connection conn, int year) throws SQLException {
         ArrayList<Crime> crimes = new ArrayList();
         Crime crime = null;
@@ -122,26 +158,14 @@ public class Main {
         return crimes;
     }
 
-    public static void populateDatabase(Connection con) throws SQLException {
-        String fileContent = readFile("backEnd/dump.csv");
-
-        String[] lines = fileContent.split("\r");
-
-        for (String line : lines) {
-            String[] columns = line.split(",");
-            Crime crime = new Crime(columns[0], columns[1], Integer.valueOf(columns[2]),
-                    Integer.valueOf(columns[3]), Integer.valueOf(columns[4]), Integer.valueOf(columns[5]), Integer.valueOf(columns[6]),
-                    Integer.valueOf(columns[7]), Integer.valueOf(columns[8]));
-            insertCrime(con, crime);
-        }
-    }
-
+    // Main Argument
     public static void main(String[] args) throws SQLException {
         Connection con = DriverManager.getConnection("jdbc:h2:./main");
         createTables(con);
         populateDatabase(con);
         Spark.externalStaticFileLocation("frontEnd");
 
+        // Where the user initially lands when loading application.
         Spark.get(
                 "/",
                 ((request, response) -> {
@@ -152,19 +176,20 @@ public class Main {
                 })
         );
 
-    }
+        // Login authentication.
 
-    static String readFile(String fileName) {
-        File f = new File(fileName);
-        try {
-            FileReader fr = new FileReader(f);
-            int fileSize = (int) f.length();
-            char[] fileContent = new char[fileSize];
-            fr.read(fileContent);
-            return new String(fileContent);
-        } catch (Exception e) {
-            return null;
-        }
+        // Method for banning a user.
+
+        // Method for loading forum entries.
+
+
+        // Method for posting forum entries.
+
+
+        // Method for updating forum rating.
+
+
+
     }
 
 }
