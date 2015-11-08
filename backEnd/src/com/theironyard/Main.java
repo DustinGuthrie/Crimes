@@ -1,5 +1,6 @@
 package com.theironyard;
 import jodd.json.JsonSerializer;
+import org.eclipse.jetty.http.HttpParser;
 import spark.Session;
 import spark.Spark;
 
@@ -190,9 +191,10 @@ public class Main {
     // Method for editing a message & it's rating.  Keep's new time.
     public static void editMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
-                "UPDATE message SET text = ?, timestamp = ? WHERE msgId =" + m.msgId);
+                "UPDATE message SET text = ?, timestamp = ? WHERE msgId = ?");
         stm.setString(1, m.text);
-        stm.setTimestamp(2, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.setInt(2, m.msgId);
+        stm.setTimestamp(3, Timestamp.valueOf(m.timestamp));
 
         stm.executeUpdate();
     }
@@ -520,6 +522,29 @@ public class Main {
                     JsonSerializer serializer = new JsonSerializer();
                     return serializer.serialize(crime);
                 })
+        );
+
+        Spark.post(
+                "/rating",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    String crimeId = session.attribute("crimeId");
+                    String rating = request.queryParams("rating");
+                    String message = request.queryParams("msgId");
+                    try {
+                        int ratingNum = Integer.valueOf(rating);
+                        int msgNum = Integer.valueOf(message);
+                        Message m = selectMsg(con, msgNum);
+                        m.rating = m.rating + ratingNum;
+                        editMsg(con, m);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    response.redirect("/home");
+                    return "";
+                })
+
         );
 
 
