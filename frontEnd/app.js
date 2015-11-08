@@ -14,6 +14,14 @@ var statsPage = {
 
   },
   initEvents: function(){
+    // LOG IN FUNCTIONALITY
+      $('#logInButton').on('click', function(event) {
+        event.preventDefault();
+        console.log("login clicked");
+         $('.statMain').removeClass('hidden');
+         $('.loginPage').addClass('hidden');
+    }),
+    
     //*****Login page that will then bring up Home page - THECLICKHIDDENFUNCTION****
     $('#stateYearButton').on('click', function(event){
       console.log("this is happening - initialbutton");
@@ -94,51 +102,6 @@ var statsPage = {
   // },
 
   // }
-
-
-// LOG IN FUNCTIONALITY
-  userLogin: function(userData) {
-   $('.login').on('click', 'button[name="submit"]', function (){
-     var user = {
-       username: input[name="username"].val(),
-       password: input[name="password"].val()
-     };
-
-     $.ajax({
-       method: 'GET',
-       url: "/login",
-       success: function(users) {
-         console.log("SUCCESS RETURNING USER")
-         usersData = JSON.parse(users);
-         _.each(usersData, function(el, idx, arr) {
-          if(el.username === username && el.password === password){
-            $('.statMain').removeClass('hidden');
-            $('.login').addClass('hidden');
-          } else {
-            $.ajax({
-              method: 'POST',
-              url: "/login",
-              data: user,
-              success: function() {
-                console.log("SUCCESS NEW USER CREATED");
-                $('.statMain').removeClass('hidden');
-                $('.login').addClass('hidden');
-              },
-              failure: function() {
-                console.log("FAILURE");
-              }
-            });
-          }
-       },
-       failure: function () {
-         console.log("FAILURE");
-       },
-     })
-
- });
-},
-
-
 
   url: "/home",
 

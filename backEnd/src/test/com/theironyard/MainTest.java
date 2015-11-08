@@ -52,10 +52,30 @@ public class MainTest {
     }
 
     @Test
+    public void insertCrime() throws SQLException {
+        Connection con = startConnection();
+        Crime c = new Crime();
+        c.id = 1;
+        c.name = "Arizona";
+        c.abbrev = "AZ";
+        c.year = 1990;
+        c.population = 19000;
+        c.total = 23000;
+        c.murder = 21000;
+        c.rape = 5;
+        c.robbery = 10;
+        c.assault = 12;
+        Main.insertCrime(con, c);
+        Crime test = Main.selectSingle(con, 1990, "Arizona");
+        endConnection(con);
+        assertTrue(test.name != null);
+    }
+
+    @Test
     public void selectCrime() throws SQLException {
         Connection con = startConnection();
-        Crime p = new Crime("AK","Alaska",2008,686293,4475,27,447,645,3356, 0);
-        Crime q = new Crime("AK","Alaska",2008,686293,4475,27,447,645,3356, 0);
+        Crime p = new Crime(1, "AK","Alaska",2008,686293,4475,27,447,645,3356);
+        Crime q = new Crime(1, "AK","Alaska",2008,686293,4475,27,447,645,3356);
         Main.insertCrime(con, p);
         Main.insertCrime(con, q);
         ArrayList<Crime> crimes = Main.selectAll(con);
@@ -64,6 +84,21 @@ public class MainTest {
         assertTrue(crimes.size() == 2);
 
     }
+
+    @Test
+    public void insertUser() throws SQLException {
+        Connection con = startConnection();
+        User u = new User();
+        u.username = "Matt";
+        u.password = "123";
+        u.ip = "2";
+        Main.insertUser(con, u);
+        User test = Main.selectUser(con, "Matt");
+        endConnection(con);
+
+        assertTrue(test.username == "Matt");
+    }
+
 
     @Test
     public void selectUser() throws SQLException {
@@ -76,6 +111,7 @@ public class MainTest {
 
         assertTrue(u != null);
     }
+
     @Test
     public void insertMsg() throws SQLException {
         Connection con = startConnection();
@@ -84,7 +120,7 @@ public class MainTest {
         LocalDateTime time = LocalDateTime.now();
         Crime c = new Crime();
         Main.insertCrime(con, c);
-        Main.insertMsg(con, 1, 1, 1, "Matt", "Rekt by Java", 1, time);
+        Main.insertMsg(con, 1, 1, 1, "Rekt by Java", 1, time);
         Message message = Main.selectMsg(con, 1);
         endConnection(con);
 

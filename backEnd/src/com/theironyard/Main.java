@@ -1,14 +1,11 @@
 package com.theironyard;
 import jodd.json.JsonSerializer;
-import org.eclipse.jetty.http.HttpParser;
 import spark.Session;
 import spark.Spark;
-
 import java.io.File;
 import java.io.FileReader;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -22,7 +19,7 @@ public class Main {
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
-        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, time TIMESTAMP)");
+        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, timestamp TIMESTAMP)");
     }
 
     // Inserting individual crime's into SQL Table "crime"
@@ -117,15 +114,14 @@ public class Main {
 
 
     // Method for inserting a new message to a crime object.
-    public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String username, String text, int rating, LocalDateTime timestamp) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)");
+    public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
         stm.setInt(1, userId);
         stm.setInt(2, crimeId);
         stm.setInt(3, msgId);
-        stm.setString(4, username);
-        stm.setInt(5, rating);
-        stm.setString(6, text);
-        stm.setTimestamp(7, Timestamp.valueOf(timestamp));
+        stm.setInt(4, rating);
+        stm.setString(5, text);
+        stm.setTimestamp(6, Timestamp.valueOf(timestamp));
         stm.execute();
     }
 
@@ -153,8 +149,7 @@ public class Main {
 
     public static Message selectMsg(Connection con, int id) throws SQLException {
         Message message = null;
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages INNER JOIN crime ON messages.crimeId = " +
-                "crime.id WHERE messages.msgId = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages WHERE messages.msgId = ?");
         stm.setInt(1, id);
         ResultSet results = stm.executeQuery();
         if (results.next()) {
@@ -216,7 +211,6 @@ public class Main {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
             crimes.add(crime);
         }
         return crimes;
@@ -246,7 +240,7 @@ public class Main {
     // Selecting crimes strictly for one year from one state.
     public static Crime selectSingle(Connection conn, int year, String name) throws SQLException {
         Crime crime = null;
-        PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?, name = ?");
+        PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ? AND name = ?");
         stm.setInt(1, year);
         stm.setString(2, name);
         ResultSet results = stm.executeQuery();
@@ -261,7 +255,6 @@ public class Main {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
         }
         return crime;
     }
@@ -283,7 +276,6 @@ public class Main {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
             crimes.add(crime);
         }
         return crimes;
@@ -396,12 +388,11 @@ public class Main {
                     m.crimeId = c.id;
                     m.userId = u.id;
                     m.msgId = 1;
-                    m.username = username;
                     m.text = request.queryParams("text");
                     m.rating = 1;
                     u.postCount = 1;
                     m.timestamp = LocalDateTime.now();
-                    insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
+                    insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
                     editPostCount(con, u);
 
                     response.redirect("/home");
@@ -435,7 +426,7 @@ public class Main {
                     u.postCount = u.postCount + 1;
                     m.timestamp = LocalDateTime.now();
                     editPostCount(con, u);
-                    insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
+                    insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
 
                     response.redirect("/home");
                     return "";
