@@ -106,6 +106,7 @@ public class Main {
         stm.executeUpdate();
     }
 
+    // Method for grabbing the user's IP.
     public static User selectIP(Connection con, String ip) throws SQLException {
         User user = null;
         PreparedStatement stm = con.prepareStatement("SELECT * FROM users WHERE ip = ?");
@@ -118,6 +119,7 @@ public class Main {
         return user;
     }
 
+    // Method for inserting a new message to a crime object.
     public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
         stm.setInt(1, userId);
@@ -129,6 +131,7 @@ public class Main {
         stm.execute();
     }
 
+    //
     public static ArrayList<Message> selectReplies(Connection con, int crimeId) throws SQLException {
 
         ArrayList<Message> selectReplies = new ArrayList<>();
@@ -270,12 +273,11 @@ public class Main {
     // Selecting all crime's for all state's for a particular year.
     public static ArrayList<Crime> selectYears(Connection conn, int year) throws SQLException {
         ArrayList<Crime> crimes = new ArrayList();
-        Crime crime = null;
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?");
         stm.setInt(1, year);
         ResultSet results = stm.executeQuery();
         while (results.next()) {
-            crime = new Crime();
+            Crime crime = new Crime();
             crime.name = results.getString("name");
             crime.abbrev = results.getString("abbrev");
             crime.year = results.getInt("year");
@@ -347,19 +349,18 @@ public class Main {
 
 
         // Method for banning a user.
-//        Spark.post(
-//                "/ban",
-//                ((request, response) -> {
-//                    String ban = request.queryParams("banUser");
-//                    User user = selectUser(con, ban);
-//
-//                    banUser(con, user);
-//
-//                    response.redirect("/");
-//                    return "";
-//                })
-//
-//        );
+        Spark.post(
+                "/ban",
+                ((request, response) -> {
+                    String user = request.queryParams("banUser");
+                    banUser(con, user);
+
+                    response.redirect("/");
+                    return "";
+                })
+
+        );
+
         // Method for loading forum entries.
 
 
