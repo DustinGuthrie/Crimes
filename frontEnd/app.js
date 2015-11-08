@@ -37,11 +37,17 @@ var statsPage = {
       method: 'GET',
       url: '/',
       success: function(crime) {
-        console.log("SUCCESS: ", crime);
+        console.log("SUCCESS: ");
         window.crimeData = JSON.parse(crime);
-        var national = data.filter(function(el) {
-          return el.state === "national";
+        var national = _.filter(crime, function(el, idx, arr) {
+          // return el.name === "National" && el.year === "2012";
+          // return el.na === "National";
+          return el.population === 313914040;
         });
+        // var nationalData = _.map(national, function(el, idx, arr){
+        //   console.log(el.name);
+        // });
+        console.log(national);
         statsPage.loadStats(national);
       },
       failure: function(crime) {
