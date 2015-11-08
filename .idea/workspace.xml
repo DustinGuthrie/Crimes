@@ -7,17 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7404beac-0258-40f8-a457-3d3f66d33e7e" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/test/Crimes/Test.class" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Crime.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Crime.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Crimes.jar" afterPath="$PROJECT_DIR$/Crimes.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Main.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/test/Crimes/com/theironyard/MainTest.class" afterPath="$PROJECT_DIR$/out/test/Crimes/com/theironyard/MainTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Message.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Message.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/User.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/User.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java" afterPath="$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/test/com/theironyard/MainTest.java" afterPath="$PROJECT_DIR$/backEnd/src/test/com/theironyard/MainTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/com/theironyard/Message.java" afterPath="$PROJECT_DIR$/backEnd/src/com/theironyard/Message.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/com/theironyard/User.java" afterPath="$PROJECT_DIR$/backEnd/src/com/theironyard/User.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Crimes.iws" />
@@ -43,7 +32,7 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.97402596">
+            <state vertical-scroll-proportion="-0.71428573">
               <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
               <folding />
             </state>
@@ -636,7 +625,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447013908448</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="reordered again +1">
+      <created>1447015541082</created>
+      <option name="number" value="00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1447015541082</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -713,7 +708,8 @@
     <MESSAGE value="Added tests..&#10;&#10;Created methods for Messages (including timestamp)&#10;&#10;Optimized User Auth:&#10;  Added static admin access based on password &quot;admin&quot;&#10;  Added halt methods for matching IPs to prevent multiple accounts per IP.&#10;  .. just a few other things.." />
     <MESSAGE value="Added methods for updating/deleting MSGs and Banning users." />
     <MESSAGE value="reordered" />
-    <option name="LAST_COMMIT_MESSAGE" value="reordered" />
+    <MESSAGE value="reordered again +1" />
+    <option name="LAST_COMMIT_MESSAGE" value="reordered again +1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -862,7 +858,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.97402596">
+        <state vertical-scroll-proportion="-0.71428573">
           <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
           <folding />
         </state>
