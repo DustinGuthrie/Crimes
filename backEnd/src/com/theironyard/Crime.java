@@ -13,10 +13,23 @@ public class Crime {
     int rape;
     int robbery;
     int assault;
-    int forum;
 
     public Crime() {
 
+    }
+
+    public Crime(int id, String name, String abbrev, int year, int population, int total, int murder, int rape, int robbery, int assault) {
+
+        this.id = id;
+        this.name = name;
+        this.abbrev = abbrev;
+        this.year = year;
+        this.population = population;
+        this.total = total;
+        this.murder = murder;
+        this.rape = rape;
+        this.robbery = robbery;
+        this.assault = assault;
     }
 
     public Crime(String name, String abbrev, int year, int population, int total, int murder, int rape, int robbery, int assault) {
@@ -31,20 +44,6 @@ public class Crime {
         this.robbery = robbery;
         this.assault = assault;
     }
-    public Crime(String abbrev, String name, int year, int population, int total, int murder, int rape, int robbery, int assault, int forum) {
-
-        this.name = name;
-        this.abbrev = abbrev;
-        this.year = year;
-        this.population = population;
-        this.total = total;
-        this.murder = murder;
-        this.rape = rape;
-        this.robbery = robbery;
-        this.assault = assault;
-        this.forum = forum;
-    }
-
     public String getName() {
 
         return name;
@@ -81,8 +80,5 @@ public class Crime {
 
         return assault;
     }
-    public int getForum() {
 
-        return forum;
-    }
 }
