@@ -23,6 +23,7 @@ var statsPage = {
 
       $.ajax({
         method: 'GET',
+        // url: '/get-single',
         url: '/home',
         success: function(crime) {
           console.log("SUCCESS: " + state + year, JSON.parse(crime));
@@ -95,25 +96,26 @@ var statsPage = {
   // }
 
   createUser: function(userData) {
-    $('.login').on('click', 'button[name="submit"]', function (){
-      var userData = {
-        userName: input[name="username"].val(),
-        password: input[name="password"].val()
-      }
+   $('.login').on('click', 'button[name="submit"]', function (){
+     var userData = {
+       userName: input[name="username"].val(),
+       password: input[name="password"].val()
+     };
 
-    $.ajax({
-      method: 'POST',
-      url: "/login",
-      data: userData,
-      success: function() {
-        console.log("SUCCESS")
-      },
-      failure: function() {
-        console.log("FAILURE")
-      }
-    })
-  }
-});
+   $.ajax({
+     method: 'POST',
+     url: "/login",
+     data: userData,
+     success: function() {
+       console.log("SUCCESS");
+     },
+     failure: function() {
+       console.log("FAILURE");
+     }
+   });
+ });
+},
+
 
 
   url: "/home",
