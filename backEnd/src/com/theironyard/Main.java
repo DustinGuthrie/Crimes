@@ -342,7 +342,7 @@ public class Main {
                     Session session = request.session();
                     session.attribute("username", username);
 
-                    response.redirect("/");
+                    response.redirect("/home");
                     return "";
                 })
         );
@@ -355,7 +355,7 @@ public class Main {
                     String user = request.queryParams("banUser");
                     banUser(con, user);
 
-                    response.redirect("/");
+                    response.redirect("/home");
                     return "";
                 })
 
@@ -373,35 +373,34 @@ public class Main {
 //                })
 //        );
 
-//        // Method for posting forum entries.
-//        Spark.post(
-//                "/create-message",
-//                (request, response) -> {
-//                    Session session = request.session();
-//                    String username = session.attribute("username");
-//                    String name = session.attribute("name");
-//                    int year = session.attribute("year");
-//                    User u = selectUser(con, username);
-//                    Crime c = selectSingle(con, year, name);
-//                    Message m = new Message();
-//                    if (username == null){
-//                        Spark.halt(403);
-//                    }
-//                    c.id = request.queryParams("crimeId");
-//                    String text = request.queryParams("text");
-//                    m.crimeId = c.id;
-//                    m.msgId = 1;
-//                    m.userId = u.id;
-//                    m.rating = 1;
-//                    m.timestamp = LocalDateTime.now();
-//                    User user = selectUser(con, username);
-//                    insertMsg(con, user.id, crimeIdNum, msgIdNum, text, ratingIdNum, timestamp);
-//
-//                    response.redirect("/home");
-//                    return ("");
-//
-//                }
-//        );
+        // Method for posting forum entries.
+        Spark.post(
+                "/create-message",
+                (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    String name = session.attribute("name");
+                    int year = session.attribute("year");
+                    User u = selectUser(con, username);
+                    Crime c = selectSingle(con, year, name);
+                    Message m = new Message();
+                    if (username == null){
+                        Spark.halt(403);
+                    }
+                    c.id = Integer.valueOf(request.queryParams("crimeId"));
+                    m.text = request.queryParams("text");
+                    m.crimeId = c.id;
+                    m.msgId = 1;
+                    m.userId = u.id;
+                    m.rating = 1;
+                    m.timestamp = LocalDateTime.now();
+                    insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
+
+                    response.redirect("/home");
+                    return "";
+
+                }
+        );
 
         // Method for replying to forum entries.
         Spark.post(
@@ -442,7 +441,7 @@ public class Main {
                         System.out.println(e.getMessage());
                     }
 
-                    response.redirect(request.headers("Referer"));
+                    response.redirect("/home");
                     return "";
                 })
         );
