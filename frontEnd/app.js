@@ -95,6 +95,8 @@ var statsPage = {
 
   // }
 
+
+// LOG IN FUNCTIONALITY
   userLogin: function(userData) {
    $('.login').on('click', 'button[name="submit"]', function (){
      var user = {

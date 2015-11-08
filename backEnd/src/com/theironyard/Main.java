@@ -1,5 +1,6 @@
 package com.theironyard;
 import jodd.json.JsonSerializer;
+import org.eclipse.jetty.http.HttpParser;
 import spark.Session;
 import spark.Spark;
 
@@ -18,9 +19,6 @@ public class Main {
     // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
-        stm.execute("DROP TABLE crime");
-        stm.execute("DROP TABLE users");
-        stm.execute("DROP TABLE messages");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
@@ -193,9 +191,10 @@ public class Main {
     // Method for editing a message & it's rating.  Keep's new time.
     public static void editMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
-                "UPDATE message SET text = ?, timestamp = ? WHERE msgId =" + m.msgId);
+                "UPDATE message SET text = ?, timestamp = ? WHERE msgId = ?");
         stm.setString(1, m.text);
-        stm.setTimestamp(2, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.setInt(2, m.msgId);
+        stm.setTimestamp(3, Timestamp.valueOf(m.timestamp));
 
         stm.executeUpdate();
     }
@@ -431,9 +430,9 @@ public class Main {
                     c.id = Integer.valueOf(request.queryParams("crimeId"));
                     m.text = request.queryParams("text");
                     m.crimeId = c.id;
-                    m.msgId = m.msgId+ 1;
+                    m.msgId = m.msgId + 1;
                     m.userId = u.id;
-                    u.postCount = 1;
+                    u.postCount = u.postCount + 1;
                     m.timestamp = LocalDateTime.now();
                     editPostCount(con, u);
                     insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
@@ -523,6 +522,29 @@ public class Main {
                     JsonSerializer serializer = new JsonSerializer();
                     return serializer.serialize(crime);
                 })
+        );
+
+        Spark.post(
+                "/rating",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    String crimeId = session.attribute("crimeId");
+                    String rating = request.queryParams("rating");
+                    String message = request.queryParams("msgId");
+                    try {
+                        int ratingNum = Integer.valueOf(rating);
+                        int msgNum = Integer.valueOf(message);
+                        Message m = selectMsg(con, msgNum);
+                        m.rating = m.rating + ratingNum;
+                        editMsg(con, m);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    response.redirect("/home");
+                    return "";
+                })
+
         );
 
 
