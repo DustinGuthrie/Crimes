@@ -8,9 +8,9 @@ public class User {
     String username;
     String password;
     String ip;
+    boolean admin = false;
     int postCount = 0;
     boolean access = true;
-    boolean admin = false;
 
     public User(){
 
