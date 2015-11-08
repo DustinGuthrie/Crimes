@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
  */
 public class Message {
     int id;
-    int replyId;
+    int userId;
+    int crimeId;
+    int msgId;
     String username;
     String text;
-    LocalDateTime time;
+    LocalDateTime timestamp;
     int rating;
 
     public Message(){
@@ -21,10 +23,6 @@ public class Message {
 
         return id;
     }
-    public int getReplyId() {
-
-        return replyId;
-    }
     public String getUsername() {
 
         return username;
@@ -33,23 +31,24 @@ public class Message {
 
         return text;
     }
-    public LocalDateTime getTime() {
+    public LocalDateTime getTimestamp() {
 
-        return time;
+        return timestamp;
     }
 
     public int getRating() {
 
         return rating;
     }
-    public Message(int id, int replyId, String username, String text, LocalDateTime time, int rating) {
 
+    public Message(int id, int userId, int crimeId, String username, String text, LocalDateTime timestamp, int rating) {
 
         this.id = id;
-        this.replyId = replyId;
+        this.userId = userId;
+        this.crimeId = crimeId;
         this.username = username;
         this.text = text;
-        this.time = time;
+        this.timestamp = timestamp;
         this.rating = rating;
     }
 }
