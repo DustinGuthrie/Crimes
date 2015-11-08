@@ -341,7 +341,7 @@ public class Main {
                     session.attribute("username", username);
 
                     response.redirect("/");
-                    return "";
+                    return ("");
                 })
         );
 
@@ -360,7 +360,36 @@ public class Main {
 //                })
 //
 //        );
-        // Method for loading forum entries.
+        Spark.post(
+                "/create-message",
+                (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+
+                    if (username == null){
+                        Spark.halt(403);
+                    }
+                    String crimeId = request.queryParams("crimeId");
+                    String msgId = request.queryParams("msgId");
+                    String text = request.queryParams("text");
+                    String timestampStr = request.queryParams("timestamp");
+                    String rating = request.queryParams("rating");
+                    try{
+                        int crimeIdNum = Integer.valueOf(crimeId);
+                        int msgIdNum = Integer.valueOf(msgId);
+                        int ratingIdNum = Integer.valueOf(rating);
+                        LocalDateTime timestamp = LocalDateTime.parse(timestampStr);
+                        User user = selectUser(con, username);
+                        insertMsg(con, user.id, crimeIdNum, msgIdNum, text, ratingIdNum, timestamp);
+
+                    }catch (Exception e){
+
+                    }
+                    response.redirect("/home");
+                    return ("");
+
+                }
+        );
 
 
         // Method for posting forum entries.

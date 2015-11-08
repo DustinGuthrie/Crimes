@@ -15,7 +15,9 @@ public class Crime {
     int assault;
     int forum;
 
-    public Crime() {}
+    public Crime() {
+
+    }
 
     public Crime(String name, String abbrev, int year, int population, int total, int murder, int rape, int robbery, int assault) {
 
