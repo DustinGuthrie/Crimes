@@ -106,6 +106,7 @@ public class Main {
         stm.executeUpdate();
     }
 
+    // Method for grabbing the user's IP.
     public static User selectIP(Connection con, String ip) throws SQLException {
         User user = null;
         PreparedStatement stm = con.prepareStatement("SELECT * FROM users WHERE ip = ?");
@@ -118,6 +119,7 @@ public class Main {
         return user;
     }
 
+    // Method for inserting a new message to a crime object.
     public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
         stm.setInt(1, userId);
@@ -129,6 +131,7 @@ public class Main {
         stm.execute();
     }
 
+    //
     public static ArrayList<Message> selectReplies(Connection con, int crimeId) throws SQLException {
 
         ArrayList<Message> selectReplies = new ArrayList<>();
@@ -200,7 +203,7 @@ public class Main {
     }
 
     // Selecting an entire State's listing of crimes for all years.
-    public static ArrayList<Crime> selectStateCrimes(Connection conn, String name) throws SQLException {
+    public static ArrayList<Crime> selectByName(Connection conn, String name) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE name = ?");
         stm.setString(1, name);
         ArrayList<Crime> crimes = new ArrayList();
@@ -245,7 +248,7 @@ public class Main {
     }
 
     // Selecting crimes strictly for one year from one state.
-    public static Crime selectYear(Connection conn, int year, String name) throws SQLException {
+    public static Crime selectSingle(Connection conn, int year, String name) throws SQLException {
         Crime crime = null;
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?, name = ?");
         stm.setInt(1, year);
@@ -270,12 +273,11 @@ public class Main {
     // Selecting all crime's for all state's for a particular year.
     public static ArrayList<Crime> selectYears(Connection conn, int year) throws SQLException {
         ArrayList<Crime> crimes = new ArrayList();
-        Crime crime = null;
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?");
         stm.setInt(1, year);
         ResultSet results = stm.executeQuery();
         while (results.next()) {
-            crime = new Crime();
+            Crime crime = new Crime();
             crime.name = results.getString("name");
             crime.abbrev = results.getString("abbrev");
             crime.year = results.getInt("year");
@@ -347,27 +349,103 @@ public class Main {
 
 
         // Method for banning a user.
-//        Spark.post(
-//                "/ban",
+        Spark.post(
+                "/ban",
+                ((request, response) -> {
+                    String user = request.queryParams("banUser");
+                    banUser(con, user);
+
+                    response.redirect("/");
+                    return "";
+                })
+
+        );
+
+//        // Method for loading forum entries.
+//        Spark.get(
+//                "/get-messages",
 //                ((request, response) -> {
-//                    String ban = request.queryParams("banUser");
-//                    User user = selectUser(con, ban);
+//                    String
 //
-//                    banUser(con, user);
 //
-//                    response.redirect("/");
-//                    return "";
+//
+//                  return "";
 //                })
-//
 //        );
-        // Method for loading forum entries.
 
+//        // Method for posting forum entries.
+//        Spark.post(
+//                "/create-message",
+//                (request, response) -> {
+//                    Session session = request.session();
+//                    String username = session.attribute("username");
+//                    String name = session.attribute("name");
+//                    int year = session.attribute("year");
+//                    User u = selectUser(con, username);
+//                    Crime c = selectSingle(con, year, name);
+//                    Message m = new Message();
+//                    if (username == null){
+//                        Spark.halt(403);
+//                    }
+//                    c.id = request.queryParams("crimeId");
+//                    String text = request.queryParams("text");
+//                    m.crimeId = c.id;
+//                    m.msgId = 1;
+//                    m.userId = u.id;
+//                    m.rating = 1;
+//                    m.timestamp = LocalDateTime.now();
+//                    User user = selectUser(con, username);
+//                    insertMsg(con, user.id, crimeIdNum, msgIdNum, text, ratingIdNum, timestamp);
+//
+//                    response.redirect("/home");
+//                    return ("");
+//
+//                }
+//        );
 
-        // Method for posting forum entries.
+        // Method for replying to forum entries.
+        Spark.post(
+                "/post",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
 
+                    response.redirect("/");
+                    return "";
+                })
+
+        );
 
         // Method for updating forum rating.
+        Spark.post(
+                "/edit-message",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    int msgId = Integer.valueOf(request.queryParams("msgId"));
 
+
+                    Message me = selectMsg(con, msgId);
+
+                    if (username == null) {
+                        Spark.halt(403);
+                    }
+                    me.text = request.queryParams("text");
+                    String rating = request.queryParams("rating");
+                    String timestampStr = request.queryParams("timestamp");
+                    try {
+                        me.msgId = msgId;
+                        me.rating = Integer.valueOf(rating);
+                        me.timestamp = LocalDateTime.parse(timestampStr);
+                        editMsg(con, me.msgId, me);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    response.redirect(request.headers("Referer"));
+                    return "";
+                })
+        );
 
 
     }
