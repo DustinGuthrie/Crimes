@@ -62,5 +62,21 @@ public class MainTest {
         assertTrue(crimes.size() == 2);
 
     }
+
+    @Test
+    public void selectUser() throws SQLException {
+        Connection con = startConnection();
+        Main.createTables(con);
+        User user = new User("Test", "test", "24.24.24.24");
+        System.out.println(user);
+        Main.insertUser(con, user);
+        Main.selectUser(con, "Test");
+        User u = Main.selectUser(con, "Test");
+        endConnection(con);
+
+        assertTrue(u != null);
+    }
+
+
     
 }
