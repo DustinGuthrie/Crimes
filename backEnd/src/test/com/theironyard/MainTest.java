@@ -2,6 +2,7 @@ package com.theironyard;
 import org.junit.Test;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -77,6 +78,27 @@ public class MainTest {
         assertTrue(u != null);
     }
 
+    @Test
+    public void selectMsgs() throws SQLException {
+        Connection con = startConnection();
+        Main.createTables(con);
+        Crime c = new Crime("T", "Test", 1, 1, 1, 1, 1, 1, 1);
+        User u = new User("Test", "testpass", "24.24.24.24");
+        Message m = new Message(u.id, c.id, 1, "test", 1, LocalDateTime.now());
 
+        Main.insertMsg(con, m, u, c);
+        ArrayList<Message> test = Main.selectMsgs(con, 1);
+        endConnection(con);
+
+        assertTrue(test.size() == 1);
+    }
+
+    int id;
+    int userId;
+    int crimeId;
+    int msgId;
+    String text;
+    int rating;
+    LocalDateTime timestamp;
     
 }
