@@ -19,16 +19,17 @@ public class Main {
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
-                "total INT, murder INT, rape INT, robbery INT, assault INT, forum INT)");
+                "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
         stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, username VARCHAR, rating INT, text VARCHAR, timestamp TIMESTAMP)");
+        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, time TIMESTAMP)");
     }
 
     // Inserting individual crime's into SQL Table "crime"
     public static void insertCrime(Connection con, Crime c) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        stm.setString(1, c.name);
-        stm.setString(2, c.abbrev);
+        PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        stm.setString(1, c.abbrev);
+        stm.setString(2, c.name);
         stm.setInt(3, c.year);
         stm.setInt(4, c.population);
         stm.setInt(5, c.total);
@@ -36,7 +37,6 @@ public class Main {
         stm.setInt(7, c.rape);
         stm.setInt(8, c.robbery);
         stm.setInt(9, c.assault);
-        stm.setInt(10, c.forum);
         stm.execute();
 
     }
@@ -100,24 +100,21 @@ public class Main {
         return user;
     }
 
-    // Method to ban user.
-    public static void banUser(Connection con, String username) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET access = false WHERE username =" + username);
+    // Method to update user's post count.
+    public static void editPostCount(Connection con, User u) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id = ?");
+        stm.setInt(1, u.postCount);
+        stm.setInt(2, u.id);
         stm.executeUpdate();
     }
 
-    // Method for grabbing the user's IP.
-    public static User selectIP(Connection con, String ip) throws SQLException {
-        User user = null;
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM users WHERE ip = ?");
-        stm.setString(1, ip);
-        ResultSet res = stm.executeQuery();
-        if (res.next()) {
-            user = new User();
-            user.ip = res.getString("ip");
-        }
-        return user;
+    // Method to ban user.
+    public static void banUser(Connection con, String username) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET access = false WHERE username = ?");
+        stm.setString(1, username);
+        stm.executeUpdate();
     }
+
 
     // Method for inserting a new message to a crime object.
     public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String username, String text, int rating, LocalDateTime timestamp) throws SQLException {
@@ -133,25 +130,24 @@ public class Main {
     }
 
     //
-    public static ArrayList<Message> selectReplies(Connection con, int crimeId) throws SQLException {
+    public static ArrayList<Message> selectMsgs(Connection con, int crimeId) throws SQLException {
 
-        ArrayList<Message> selectReplies = new ArrayList<>();
+        ArrayList<Message> selectMsgs = new ArrayList<>();
         PreparedStatement stm = con.prepareStatement(
-                "SELECT * FROM messages INNER JOIN crime ON messages.crimeId = crime.id WHERE messages.crimeId = ?");
+                "SELECT * FROM messages WHERE messages.crimeId = ?");
         stm.setInt(1, crimeId);
         ResultSet results = stm.executeQuery();
         while (results.next()) {
             Message message = new Message();
-            message.id = results.getInt("messages.id");
             message.userId = results.getInt("userId");
             message.crimeId = results.getInt("crimeId");
             message.msgId = results.getInt("msgId");
             message.text = results.getString("text");
             message.timestamp = results.getTimestamp("timestamp").toLocalDateTime();
             message.rating = results.getInt("rating");
-            selectReplies.add(message);
+            selectMsgs.add(message);
         }
-        return selectReplies;
+        return selectMsgs;
 
     }
 
@@ -163,7 +159,6 @@ public class Main {
         ResultSet results = stm.executeQuery();
         if (results.next()) {
             message = new Message();
-            message.id = results.getInt("messages.id");
             message.userId = results.getInt("userId");
             message.crimeId = results.getInt("crimeId");
             message.msgId = results.getInt("msgId");
@@ -175,30 +170,30 @@ public class Main {
     }
 
     // Method for deleting a message.
-    static void deleteMsg(Connection con, int msgId) throws SQLException {
+    public static void deleteMsg(Connection con, int msgId) throws SQLException {
         PreparedStatement stmt = con.prepareStatement("DELETE FROM message WHERE msgId = ?");
         stmt.setInt(1, msgId);
         stmt.execute();
     }
 
     // Method for an Admin deleting a message.
-    static void adminDeleteMsg(Connection con, int msgId, Message m) throws SQLException {
+    public static void adminDeleteMsg(Connection con, int msgId, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
-                "UPDATE message SET text = ?, rating = ?, userId = ?, timestamp = ? WHERE msgId =" + msgId);
+                "UPDATE message SET text = ?, rating = ?, userId = ?, timestamp = ? WHERE msgId = ?");
         stm.setString(1, m.text);
         stm.setInt(2, m.rating);
         stm.setInt(3, m.userId);
-        stm.setTimestamp(4, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.setTimestamp(4, Timestamp.valueOf(m.timestamp));
+        stm.setInt(5, m.msgId);
         stm.executeUpdate();
     }
 
     // Method for editing a message & it's rating.  Keep's new time.
-    static void editMsg(Connection con, int msgId, Message m) throws SQLException {
+    public static void editMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
-                "UPDATE message SET text = ?, rating = ?, timestamp = ? WHERE msgId =" + msgId);
+                "UPDATE message SET text = ?, timestamp = ? WHERE msgId =" + m.msgId);
         stm.setString(1, m.text);
-        stm.setInt(2, m.rating);
-        stm.setTimestamp(3, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.setTimestamp(2, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
 
         stm.executeUpdate();
     }
@@ -320,7 +315,7 @@ public class Main {
                     String ip = request.ip();
                     User user = selectUser(con, username);
 
-                    if (username.isEmpty() || password.isEmpty() || ip.equals(selectIP(con, user.ip).toString())) {
+                    if (username.isEmpty() || password.isEmpty()) {
                         Spark.halt(403);
                     }
 
@@ -332,11 +327,11 @@ public class Main {
                             user.admin = true;
                         }
                         user.ip = ip;
-                        if (ip.matches(selectIP(con, ip).toString())) {
+                        if (ip.matches(user.ip)) {
                             Spark.halt(403);
                         }
                         insertUser(con, user);
-                    } else if (!password.equals(user.password) || (user.access = false)) {
+                    } else if (!password.equals(user.password) || (!user.access)) {
                         Spark.halt(403);
                     }
 
@@ -362,17 +357,23 @@ public class Main {
 
         );
 
-//        // Method for loading forum entries.
-//        Spark.get(
-//                "/get-messages",
-//                ((request, response) -> {
-//                    String
-//
-//
-//
-//                  return "";
-//                })
-//        );
+        // Method for loading forum entries.
+        Spark.get(
+                "/get-messages",
+                ((request, response) -> {
+                    String id = request.queryParams("crimeId");
+                    try {
+                        int idNum = Integer.valueOf(id);
+                        ArrayList<Message> msgs = selectMsgs(con, idNum);
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.serialize(msgs);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                  return "";
+                })
+        );
 
         // Method for posting forum entries.
         Spark.post(
@@ -380,22 +381,29 @@ public class Main {
                 (request, response) -> {
                     Session session = request.session();
                     String username = session.attribute("username");
-                    String name = session.attribute("name");
-                    int year = session.attribute("year");
-                    User u = selectUser(con, username);
-                    Crime c = selectSingle(con, year, name);
-                    Message m = new Message();
                     if (username == null){
                         Spark.halt(403);
                     }
+
+                    String name = request.queryParams("name");
+                    int year = Integer.valueOf(request.queryParams("year"));
+
+                    User u = selectUser(con, username);
+                    Crime c = selectSingle(con, year, name);
+                    Message m = new Message();
+
+                    m.text = request.queryParams("text");
                     m.crimeId = c.id;
                     m.userId = u.id;
                     m.msgId = 1;
                     m.username = username;
                     m.text = request.queryParams("text");
                     m.rating = 1;
+                    u.postCount = 1;
                     m.timestamp = LocalDateTime.now();
                     insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
+                    editPostCount(con, u);
+                    insertMsg(con, m, u, c);
 
                     response.redirect("/home");
                     return "";
@@ -405,12 +413,32 @@ public class Main {
 
         // Method for replying to forum entries.
         Spark.post(
-                "/post",
+                "/create-reply",
                 ((request, response) -> {
                     Session session = request.session();
                     String username = session.attribute("username");
+                    if (username == null){
+                        Spark.halt(403);
+                    }
 
-                    response.redirect("/");
+                    String name = request.queryParams("name");
+                    int year = Integer.valueOf(request.queryParams("year"));
+
+                    User u = selectUser(con, username);
+                    Crime c = selectSingle(con, year, name);
+                    Message m = new Message();
+
+                    c.id = Integer.valueOf(request.queryParams("crimeId"));
+                    m.text = request.queryParams("text");
+                    m.crimeId = c.id;
+                    m.msgId = m.msgId+ 1;
+                    m.userId = u.id;
+                    u.postCount = 1;
+                    m.timestamp = LocalDateTime.now();
+                    editPostCount(con, u);
+                    insertMsg(con, m, u, c);
+
+                    response.redirect("/home");
                     return "";
                 })
 
@@ -431,11 +459,9 @@ public class Main {
                         Spark.halt(403);
                     }
                     me.text = request.queryParams("text");
-                    String rating = request.queryParams("rating");
                     String timestampStr = request.queryParams("timestamp");
                     try {
                         me.msgId = msgId;
-                        me.rating = Integer.valueOf(rating);
                         me.timestamp = LocalDateTime.parse(timestampStr);
                         editMsg(con, me.msgId, me);
                     } catch (Exception e) {
@@ -444,6 +470,58 @@ public class Main {
 
                     response.redirect("/home");
                     return "";
+                })
+        );
+
+        Spark.get(
+                "/get-all",
+                ((request, response) -> {
+                    ArrayList<Crime> crime = selectAll(con);
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.serialize(crime);
+                })
+        );
+
+        Spark.get(
+                "/get-years",
+                ((request, response) -> {
+                    String yearNum = request.queryParams("year");
+                    try {
+                        int year = Integer.valueOf(yearNum);
+                        ArrayList<Crime> crime = selectYears(con, year);
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.serialize(crime);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    return "";
+                })
+        );
+
+        Spark.get(
+                "/get-single",
+                ((request, response) -> {
+                    String yearNum = request.queryParams("year");
+                    String name = request.queryParams("name");
+                    try {
+                        int year = Integer.valueOf(yearNum);
+                        Crime crime = selectSingle(con, year, name);
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.serialize(crime);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    return "";
+                })
+        );
+
+        Spark.get(
+                "/get-graph",
+                ((request, response) -> {
+                    String name = request.queryParams("name");
+                    ArrayList<Crime> crime = selectByName(con, name);
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.serialize(crime);
                 })
         );
 
