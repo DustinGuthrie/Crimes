@@ -3,7 +3,7 @@ package com.theironyard;
  * Created by Agronis on 11/5/15.
  */
 public class Crime {
-
+    int id;
     String name;
     String abbrev;
     int year;
