@@ -18,6 +18,9 @@ public class Main {
     // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
+        stm.execute("DROP TABLE crime");
+        stm.execute("DROP TABLE users");
+        stm.execute("DROP TABLE messages");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
@@ -116,14 +119,15 @@ public class Main {
 
 
     // Method for inserting a new message to a crime object.
-    public static void insertMsg(Connection con, Message m, User u, Crime c) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
-        stm.setInt(1, u.id);
-        stm.setInt(2, c.id);
-        stm.setInt(3, m.msgId);
-        stm.setInt(4, m.rating);
-        stm.setString(5, m.text);
-        stm.setTimestamp(6, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+    public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String username, String text, int rating, LocalDateTime timestamp) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)");
+        stm.setInt(1, userId);
+        stm.setInt(2, crimeId);
+        stm.setInt(3, msgId);
+        stm.setString(4, username);
+        stm.setInt(5, rating);
+        stm.setString(6, text);
+        stm.setTimestamp(7, Timestamp.valueOf(timestamp));
         stm.execute();
     }
 
@@ -137,7 +141,6 @@ public class Main {
         ResultSet results = stm.executeQuery();
         while (results.next()) {
             Message message = new Message();
-            message.id = results.getInt("messages.id");
             message.userId = results.getInt("userId");
             message.crimeId = results.getInt("crimeId");
             message.msgId = results.getInt("msgId");
@@ -158,7 +161,6 @@ public class Main {
         ResultSet results = stm.executeQuery();
         if (results.next()) {
             message = new Message();
-            message.id = results.getInt("messages.id");
             message.userId = results.getInt("userId");
             message.crimeId = results.getInt("crimeId");
             message.msgId = results.getInt("msgId");
@@ -237,7 +239,6 @@ public class Main {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
             crimes.add(crime);
         }
         return crimes;
@@ -357,17 +358,23 @@ public class Main {
 
         );
 
-//        // Method for loading forum entries.
-//        Spark.get(
-//                "/get-messages",
-//                ((request, response) -> {
-//                    String
-//
-//
-//
-//                  return "";
-//                })
-//        );
+        // Method for loading forum entries.
+        Spark.get(
+                "/get-messages",
+                ((request, response) -> {
+                    String id = request.queryParams("crimeId");
+                    try {
+                        int idNum = Integer.valueOf(id);
+                        ArrayList<Message> msgs = selectMsgs(con, idNum);
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.serialize(msgs);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                  return "";
+                })
+        );
 
         // Method for posting forum entries.
         Spark.post(
@@ -386,16 +393,17 @@ public class Main {
                     Crime c = selectSingle(con, year, name);
                     Message m = new Message();
 
-                    c.id = Integer.valueOf(request.queryParams("crimeId"));
                     m.text = request.queryParams("text");
                     m.crimeId = c.id;
-                    m.msgId = 1;
                     m.userId = u.id;
+                    m.msgId = 1;
+                    m.username = username;
+                    m.text = request.queryParams("text");
                     m.rating = 1;
                     u.postCount = 1;
                     m.timestamp = LocalDateTime.now();
+                    insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
                     editPostCount(con, u);
-                    insertMsg(con, m, u, c);
 
                     response.redirect("/home");
                     return "";
@@ -428,7 +436,7 @@ public class Main {
                     u.postCount = 1;
                     m.timestamp = LocalDateTime.now();
                     editPostCount(con, u);
-                    insertMsg(con, m, u, c);
+                    insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
 
                     response.redirect("/home");
                     return "";
@@ -478,10 +486,15 @@ public class Main {
                 "/get-years",
                 ((request, response) -> {
                     String yearNum = request.queryParams("year");
-                    int year = Integer.valueOf(yearNum);
-                    ArrayList<Crime> crime = selectYears(con, year);
-                    JsonSerializer serializer = new JsonSerializer();
-                    return serializer.serialize(crime);
+                    try {
+                        int year = Integer.valueOf(yearNum);
+                        ArrayList<Crime> crime = selectYears(con, year);
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.serialize(crime);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    return "";
                 })
         );
 
@@ -496,7 +509,7 @@ public class Main {
                         JsonSerializer serializer = new JsonSerializer();
                         return serializer.serialize(crime);
                     } catch (Exception e) {
-
+                        System.out.println(e.getMessage());
                     }
                     return "";
                 })

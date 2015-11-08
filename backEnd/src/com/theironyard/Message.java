@@ -12,8 +12,8 @@ public class Message {
     int msgId;
     String username;
     String text;
-    LocalDateTime timestamp;
     int rating;
+    LocalDateTime timestamp;
 
     public Message(){
 
@@ -39,6 +39,16 @@ public class Message {
     public int getRating() {
 
         return rating;
+    }
+
+    public Message(int id, int userId, int crimeId, int msgId, String text, LocalDateTime timestamp, int rating) {
+        this.id = id;
+        this.userId = userId;
+        this.crimeId = crimeId;
+        this.msgId = msgId;
+        this.text = text;
+        this.timestamp = timestamp;
+        this.rating = rating;
     }
 
     public Message(int id, int userId, int crimeId, String username, String text, LocalDateTime timestamp, int rating) {

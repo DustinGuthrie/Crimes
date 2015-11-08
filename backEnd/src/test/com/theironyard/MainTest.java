@@ -2,6 +2,8 @@ package com.theironyard;
 import org.junit.Test;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -21,6 +23,8 @@ public class MainTest {
 
         Statement stm = con.createStatement();
         stm.execute("DROP TABLE crime");
+        stm.execute("DROP TABLE users");
+        stm.execute("DROP TABLE messages");
         con.close();
     }
 
@@ -42,7 +46,6 @@ public class MainTest {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
             crimes.add(crime);
         }
         endConnection(con);
@@ -51,7 +54,6 @@ public class MainTest {
     @Test
     public void selectCrime() throws SQLException {
         Connection con = startConnection();
-        Main.createTables(con);
         Crime p = new Crime("AK","Alaska",2008,686293,4475,27,447,645,3356, 0);
         Crime q = new Crime("AK","Alaska",2008,686293,4475,27,447,645,3356, 0);
         Main.insertCrime(con, p);
@@ -66,17 +68,29 @@ public class MainTest {
     @Test
     public void selectUser() throws SQLException {
         Connection con = startConnection();
-        Main.createTables(con);
         User user = new User("Test", "test", "24.24.24.24");
         System.out.println(user);
         Main.insertUser(con, user);
-        Main.selectUser(con, "Test");
         User u = Main.selectUser(con, "Test");
         endConnection(con);
 
         assertTrue(u != null);
     }
+    @Test
+    public void insertMsg() throws SQLException {
+        Connection con = startConnection();
+        User u= new User ("Matt", "123", "ip");
+        Main.insertUser(con, u);
+        LocalDateTime time = LocalDateTime.now();
+        Crime c = new Crime();
+        Main.insertCrime(con, c);
+        Main.insertMsg(con, 1, 1, 1, "Matt", "Rekt by Java", 1, time);
+        Message message = Main.selectMsg(con, 1);
+        endConnection(con);
+
+        assertTrue(message != null);
+    }
 
 
-    
+
 }
