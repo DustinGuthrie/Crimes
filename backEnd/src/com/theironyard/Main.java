@@ -21,7 +21,7 @@ public class Main {
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT, forum INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
-        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, username VARCHAR, rating INT, text VARCHAR, time TIMESTAMP)");
+        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, username VARCHAR, rating INT, text VARCHAR, timestamp TIMESTAMP)");
     }
 
     // Inserting individual crime's into SQL Table "crime"
@@ -120,14 +120,15 @@ public class Main {
     }
 
     // Method for inserting a new message to a crime object.
-    public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
+    public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String username, String text, int rating, LocalDateTime timestamp) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)");
         stm.setInt(1, userId);
         stm.setInt(2, crimeId);
         stm.setInt(3, msgId);
-        stm.setString(4, text);
+        stm.setString(4, username);
         stm.setInt(5, rating);
-        stm.setTimestamp(6, Timestamp.valueOf(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.setString(6, text);
+        stm.setTimestamp(7, Timestamp.valueOf(timestamp));
         stm.execute();
     }
 
@@ -387,14 +388,14 @@ public class Main {
                     if (username == null){
                         Spark.halt(403);
                     }
-                    c.id = Integer.valueOf(request.queryParams("crimeId"));
-                    m.text = request.queryParams("text");
                     m.crimeId = c.id;
-                    m.msgId = 1;
                     m.userId = u.id;
+                    m.msgId = 1;
+                    m.username = username;
+                    m.text = request.queryParams("text");
                     m.rating = 1;
                     m.timestamp = LocalDateTime.now();
-                    insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
+                    insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
 
                     response.redirect("/home");
                     return "";
