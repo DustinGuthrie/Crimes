@@ -203,7 +203,7 @@ public class Main {
     }
 
     // Selecting an entire State's listing of crimes for all years.
-    public static ArrayList<Crime> selectStateCrimes(Connection conn, String name) throws SQLException {
+    public static ArrayList<Crime> selectByName(Connection conn, String name) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE name = ?");
         stm.setString(1, name);
         ArrayList<Crime> crimes = new ArrayList();
@@ -248,7 +248,7 @@ public class Main {
     }
 
     // Selecting crimes strictly for one year from one state.
-    public static Crime selectYear(Connection conn, int year, String name) throws SQLException {
+    public static Crime selectSingle(Connection conn, int year, String name) throws SQLException {
         Crime crime = null;
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?, name = ?");
         stm.setInt(1, year);
@@ -361,11 +361,60 @@ public class Main {
 
         );
 
-        // Method for loading forum entries.
+//        // Method for loading forum entries.
+//        Spark.get(
+//                "/get-messages",
+//                ((request, response) -> {
+//                    String
+//
+//
+//
+//                  return "";
+//                })
+//        );
 
+//        // Method for posting forum entries.
+//        Spark.post(
+//                "/create-message",
+//                (request, response) -> {
+//                    Session session = request.session();
+//                    String username = session.attribute("username");
+//                    String name = session.attribute("name");
+//                    int year = session.attribute("year");
+//                    User u = selectUser(con, username);
+//                    Crime c = selectSingle(con, year, name);
+//                    Message m = new Message();
+//                    if (username == null){
+//                        Spark.halt(403);
+//                    }
+//                    c.id = request.queryParams("crimeId");
+//                    String text = request.queryParams("text");
+//                    m.crimeId = c.id;
+//                    m.msgId = 1;
+//                    m.userId = u.id;
+//                    m.rating = 1;
+//                    m.timestamp = LocalDateTime.now();
+//                    User user = selectUser(con, username);
+//                    insertMsg(con, user.id, crimeIdNum, msgIdNum, text, ratingIdNum, timestamp);
+//
+//                    response.redirect("/home");
+//                    return ("");
+//
+//                }
+//        );
 
-        // Method for posting forum entries.
+        // Method for replying to forum entries.
+        Spark.post(
+                "/post",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
 
+                    response.redirect("/");
+                    return "";
+                })
+
+        );
 
         // Method for updating forum rating.
         Spark.post(
