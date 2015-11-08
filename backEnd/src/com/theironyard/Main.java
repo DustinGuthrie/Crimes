@@ -368,7 +368,35 @@ public class Main {
 
 
         // Method for updating forum rating.
+        Spark.post(
+                "/edit-message",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    int msgId = Integer.valueOf(request.queryParams("msgId"));
 
+
+                    Message me = selectMsg(con, msgId);
+
+                    if (username == null) {
+                        Spark.halt(403);
+                    }
+                    me.text = request.queryParams("text");
+                    String rating = request.queryParams("rating");
+                    String timestampStr = request.queryParams("timestamp");
+                    try {
+                        me.msgId = msgId;
+                        me.rating = Integer.valueOf(rating);
+                        me.timestamp = LocalDateTime.parse(timestampStr);
+                        editMsg(con, me.msgId, me);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    response.redirect(request.headers("Referer"));
+                    return "";
+                })
+        );
 
 
     }
