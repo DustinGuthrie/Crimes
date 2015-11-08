@@ -95,26 +95,49 @@ var statsPage = {
 
   // }
 
-  createUser: function(userData) {
+
+// LOG IN FUNCTIONALITY
+  userLogin: function(userData) {
    $('.login').on('click', 'button[name="submit"]', function (){
-     var userData = {
-       userName: input[name="username"].val(),
+     var user = {
+       username: input[name="username"].val(),
        password: input[name="password"].val()
      };
 
-   $.ajax({
-     method: 'POST',
-     url: "/login",
-     data: userData,
-     success: function() {
-       console.log("SUCCESS");
-     },
-     failure: function() {
-       console.log("FAILURE");
-     }
-   });
+     $.ajax({
+       method: 'GET',
+       url: "/login",
+       success: function(users) {
+         console.log("SUCCESS RETURNING USER")
+         usersData = JSON.parse(users);
+         _.each(usersData, function(el, idx, arr) {
+          if(el.username === username && el.password === password){
+            $('.statMain').removeClass('hidden');
+            $('.login').addClass('hidden');
+          } else {
+            $.ajax({
+              method: 'POST',
+              url: "/login",
+              data: user,
+              success: function() {
+                console.log("SUCCESS NEW USER CREATED");
+                $('.statMain').removeClass('hidden');
+                $('.login').addClass('hidden');
+              },
+              failure: function() {
+                console.log("FAILURE");
+              }
+            });
+          }
+       },
+       failure: function () {
+         console.log("FAILURE");
+       },
+     })
+
  });
 },
+
 
 
   url: "/home",
