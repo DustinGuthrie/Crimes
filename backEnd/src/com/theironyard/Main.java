@@ -18,10 +18,12 @@ public class Main {
     // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
+        stm.execute("DROP TABLE crime");
+        stm.execute("DROP TABLE users");
+        stm.execute("DROP TABLE messages");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
-        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, username VARCHAR, rating INT, text VARCHAR, timestamp TIMESTAMP)");
         stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, time TIMESTAMP)");
     }
 
