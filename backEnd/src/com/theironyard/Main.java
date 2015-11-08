@@ -21,7 +21,7 @@ public class Main {
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT, forum INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
-        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, replyID INT, username VARCHAR, rating INT, text VARCHAR, time TIMESTAMP)");
+        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, username VARCHAR, rating INT, text VARCHAR, time TIMESTAMP)");
     }
 
     // Inserting individual crime's into SQL Table "crime"
@@ -100,6 +100,12 @@ public class Main {
         return user;
     }
 
+    // Method to ban user.
+    public static void banUser(Connection con, String username) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET access = false WHERE username =" + username);
+        stm.executeUpdate();
+    }
+
     public static User selectIP(Connection con, String ip) throws SQLException {
         User user = null;
         PreparedStatement stm = con.prepareStatement("SELECT * FROM users WHERE ip = ?");
@@ -112,30 +118,32 @@ public class Main {
         return user;
     }
 
-    public static void insertMsg(Connection con, int user_id, int reply_id, String text, int rating, LocalDateTime timestamp) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?)");
-        stm.setInt(1, user_id);
-        stm.setInt(2, reply_id);
-        stm.setString(3, text);
-        stm.setInt(4, rating);
-        stm.setTimestamp(5, Timestamp.valueOf(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+    public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
+        stm.setInt(1, userId);
+        stm.setInt(2, crimeId);
+        stm.setInt(3, msgId);
+        stm.setString(4, text);
+        stm.setInt(5, rating);
+        stm.setTimestamp(6, Timestamp.valueOf(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
         stm.execute();
     }
 
-    public static ArrayList<Message> selectReplies(Connection con, int replyId) throws SQLException {
+    public static ArrayList<Message> selectReplies(Connection con, int crimeId) throws SQLException {
 
         ArrayList<Message> selectReplies = new ArrayList<>();
         PreparedStatement stm = con.prepareStatement(
-                "SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");
-        stm.setInt(1, replyId);
+                "SELECT * FROM messages INNER JOIN crime ON messages.crimeId = crime.id WHERE messages.crimeId = ?");
+        stm.setInt(1, crimeId);
         ResultSet results = stm.executeQuery();
         while (results.next()) {
             Message message = new Message();
             message.id = results.getInt("messages.id");
-            message.replyId = results.getInt("messages.reply_id");
-            message.username = results.getString("users.name");
+            message.userId = results.getInt("userId");
+            message.crimeId = results.getInt("crimeId");
+            message.msgId = results.getInt("msgId");
             message.text = results.getString("text");
-            message.time = results.getTimestamp("timestamp").toLocalDateTime();
+            message.timestamp = results.getTimestamp("timestamp").toLocalDateTime();
             message.rating = results.getInt("rating");
             selectReplies.add(message);
         }
@@ -145,20 +153,50 @@ public class Main {
 
     public static Message selectMsg(Connection con, int id) throws SQLException {
         Message message = null;
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = " +
-                "users.id WHERE messages.id = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages INNER JOIN crime ON messages.crimeId = " +
+                "crime.id WHERE messages.msgId = ?");
         stm.setInt(1, id);
         ResultSet results = stm.executeQuery();
         if (results.next()) {
             message = new Message();
             message.id = results.getInt("messages.id");
-            message.replyId = results.getInt("messages.reply_id");
-            message.username = results.getString("users.name");
+            message.userId = results.getInt("userId");
+            message.crimeId = results.getInt("crimeId");
+            message.msgId = results.getInt("msgId");
             message.text = results.getString("text");
-            message.time = results.getTimestamp("timestamp").toLocalDateTime();
+            message.timestamp = results.getTimestamp("timestamp").toLocalDateTime();
             message.rating = results.getInt("rating");
         }
         return message;
+    }
+
+    // Method for deleting a message.
+    static void deleteMsg(Connection con, int msgId) throws SQLException {
+        PreparedStatement stmt = con.prepareStatement("DELETE FROM message WHERE msgId = ?");
+        stmt.setInt(1, msgId);
+        stmt.execute();
+    }
+
+    // Method for an Admin deleting a message.
+    static void adminDeleteMsg(Connection con, int msgId, Message m) throws SQLException {
+        PreparedStatement stm = con.prepareStatement(
+                "UPDATE message SET text = ?, rating = ?, userId = ?, timestamp = ? WHERE msgId =" + msgId);
+        stm.setString(1, m.text);
+        stm.setInt(2, m.rating);
+        stm.setInt(3, m.userId);
+        stm.setTimestamp(4, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.executeUpdate();
+    }
+
+    // Method for editing a message & it's rating.  Keep's new time.
+    static void editMsg(Connection con, int msgId, Message m) throws SQLException {
+        PreparedStatement stm = con.prepareStatement(
+                "UPDATE message SET text = ?, rating = ?, timestamp = ? WHERE msgId =" + msgId);
+        stm.setString(1, m.text);
+        stm.setInt(2, m.rating);
+        stm.setTimestamp(3, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+
+        stm.executeUpdate();
     }
 
     // Selecting an entire State's listing of crimes for all years.
@@ -262,11 +300,10 @@ public class Main {
 
         // Where the user initially lands when loading application.
         Spark.get(
-                "/",
+                "/home",
                 ((request, response) -> {
                     ArrayList<Crime> crime = selectAll(con);
                     JsonSerializer serializer = new JsonSerializer();
-                    System.out.println(selectAll(con));
                     return serializer.serialize(crime);
                 })
         );
@@ -310,7 +347,19 @@ public class Main {
 
 
         // Method for banning a user.
-
+//        Spark.post(
+//                "/ban",
+//                ((request, response) -> {
+//                    String ban = request.queryParams("banUser");
+//                    User user = selectUser(con, ban);
+//
+//                    banUser(con, user);
+//
+//                    response.redirect("/");
+//                    return "";
+//                })
+//
+//        );
         // Method for loading forum entries.
 
 
