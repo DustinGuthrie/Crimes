@@ -102,14 +102,16 @@ public class Main {
 
     // Method to update user's post count.
     public static void editPostCount(Connection con, User u) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id =" + u.id);
+        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id = ?");
         stm.setInt(1, u.postCount);
+        stm.setInt(2, u.id);
         stm.executeUpdate();
     }
 
     // Method to ban user.
     public static void banUser(Connection con, String username) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET access = false WHERE username =" + username);
+        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET access = false WHERE username = ?");
+        stm.setString(1, username);
         stm.executeUpdate();
     }
 
@@ -178,11 +180,12 @@ public class Main {
     // Method for an Admin deleting a message.
     public static void adminDeleteMsg(Connection con, int msgId, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
-                "UPDATE message SET text = ?, rating = ?, userId = ?, timestamp = ? WHERE msgId =" + msgId);
+                "UPDATE message SET text = ?, rating = ?, userId = ?, timestamp = ? WHERE msgId = ?");
         stm.setString(1, m.text);
         stm.setInt(2, m.rating);
         stm.setInt(3, m.userId);
-        stm.setTimestamp(4, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+        stm.setInt(4, m.msgId);
+        stm.setTimestamp(4, Timestamp.valueOf(m.timestamp));
         stm.executeUpdate();
     }
 
@@ -313,7 +316,7 @@ public class Main {
                     String ip = request.ip();
                     User user = selectUser(con, username);
 
-                    if (username.isEmpty() || password.isEmpty() || ip.equals(user.ip)) {
+                    if (username.isEmpty() || password.isEmpty()) {
                         Spark.halt(403);
                     }
 
@@ -329,7 +332,7 @@ public class Main {
                             Spark.halt(403);
                         }
                         insertUser(con, user);
-                    } else if (!password.equals(user.password) || (user.access = false)) {
+                    } else if (!password.equals(user.password) || (!user.access)) {
                         Spark.halt(403);
                     }
 
@@ -460,6 +463,53 @@ public class Main {
 
                     response.redirect("/home");
                     return "";
+                })
+        );
+
+        Spark.get(
+                "/get-all",
+                ((request, response) -> {
+                    ArrayList<Crime> crime = selectAll(con);
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.serialize(crime);
+                })
+        );
+
+        Spark.get(
+                "/get-years",
+                ((request, response) -> {
+                    String yearNum = request.queryParams("year");
+                    int year = Integer.valueOf(yearNum);
+                    ArrayList<Crime> crime = selectYears(con, year);
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.serialize(crime);
+                })
+        );
+
+        Spark.get(
+                "/get-single",
+                ((request, response) -> {
+                    String yearNum = request.queryParams("year");
+                    String name = request.queryParams("name");
+                    try {
+                        int year = Integer.valueOf(yearNum);
+                        Crime crime = selectSingle(con, year, name);
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.serialize(crime);
+                    } catch (Exception e) {
+
+                    }
+                    return "";
+                })
+        );
+
+        Spark.get(
+                "/get-graph",
+                ((request, response) -> {
+                    String name = request.queryParams("name");
+                    ArrayList<Crime> crime = selectByName(con, name);
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.serialize(crime);
                 })
         );
 
