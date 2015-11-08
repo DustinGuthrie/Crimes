@@ -46,7 +46,6 @@ public class MainTest {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
             crimes.add(crime);
         }
         endConnection(con);

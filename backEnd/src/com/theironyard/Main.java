@@ -237,7 +237,6 @@ public class Main {
             crime.rape = results.getInt("rape");
             crime.robbery = results.getInt("robbery");
             crime.assault = results.getInt("assault");
-            crime.forum = results.getInt("forum");
             crimes.add(crime);
         }
         return crimes;
@@ -403,7 +402,6 @@ public class Main {
                     m.timestamp = LocalDateTime.now();
                     insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
                     editPostCount(con, u);
-                    insertMsg(con, m, u, c);
 
                     response.redirect("/home");
                     return "";
@@ -436,7 +434,7 @@ public class Main {
                     u.postCount = 1;
                     m.timestamp = LocalDateTime.now();
                     editPostCount(con, u);
-                    insertMsg(con, m, u, c);
+                    insertMsg(con, u.id, c.id, m.msgId, m.username, m.text, m.rating, m.timestamp);
 
                     response.redirect("/home");
                     return "";
@@ -463,7 +461,7 @@ public class Main {
                     try {
                         me.msgId = msgId;
                         me.timestamp = LocalDateTime.parse(timestampStr);
-                        editMsg(con, me.msgId, me);
+                        editMsg(con, me);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
