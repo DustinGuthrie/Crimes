@@ -19,16 +19,16 @@ public class Main {
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
-                "total INT, murder INT, rape INT, robbery INT, assault INT, forum INT)");
+                "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
-        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, username VARCHAR, rating INT, text VARCHAR, time TIMESTAMP)");
+        stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, time TIMESTAMP)");
     }
 
     // Inserting individual crime's into SQL Table "crime"
     public static void insertCrime(Connection con, Crime c) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        stm.setString(1, c.name);
-        stm.setString(2, c.abbrev);
+        PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        stm.setString(1, c.abbrev);
+        stm.setString(2, c.name);
         stm.setInt(3, c.year);
         stm.setInt(4, c.population);
         stm.setInt(5, c.total);
@@ -36,7 +36,6 @@ public class Main {
         stm.setInt(7, c.rape);
         stm.setInt(8, c.robbery);
         stm.setInt(9, c.assault);
-        stm.setInt(10, c.forum);
         stm.execute();
 
     }
@@ -122,8 +121,8 @@ public class Main {
         stm.setInt(1, u.id);
         stm.setInt(2, c.id);
         stm.setInt(3, m.msgId);
-        stm.setString(4, m.text);
-        stm.setInt(5, m.rating);
+        stm.setInt(4, m.rating);
+        stm.setString(5, m.text);
         stm.setTimestamp(6, Timestamp.valueOf(m.timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
         stm.execute();
     }
@@ -184,8 +183,8 @@ public class Main {
         stm.setString(1, m.text);
         stm.setInt(2, m.rating);
         stm.setInt(3, m.userId);
-        stm.setInt(4, m.msgId);
         stm.setTimestamp(4, Timestamp.valueOf(m.timestamp));
+        stm.setInt(5, m.msgId);
         stm.executeUpdate();
     }
 
