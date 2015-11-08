@@ -34,8 +34,8 @@ var statsPage = {
 
   grabStatsFromServer: function() {
     $.ajax({
-      type: 'GET',
-      url: statsPage.url,
+      method: 'GET',
+      url: '/',
       success: function(crime) {
         console.log("SUCCESS: ", crime);
         window.crimeData = JSON.parse(crime);
@@ -59,6 +59,6 @@ var statsPage = {
   },
 
 
-  url: "/home",
+  url: "/",
 
 };
