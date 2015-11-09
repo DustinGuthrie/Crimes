@@ -3,7 +3,6 @@ import org.junit.Test;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -15,7 +14,7 @@ public class MainTest {
 
     public Connection startConnection() throws SQLException {
         Connection con = DriverManager.getConnection("jdbc:h2:./test");
-        Main.createTables(con);
+        Methods.createTables(con);
         return con;
     }
 
@@ -31,7 +30,7 @@ public class MainTest {
     @Test
     public void populate() throws SQLException {
         Connection con = startConnection();
-        Main.populateDatabase(con);
+        Methods.populateDatabase(con);
         PreparedStatement stm = con.prepareStatement("SELECT * FROM crime");
         ArrayList<Crime> crimes = new ArrayList<>();
         ResultSet results = stm.executeQuery();
@@ -65,8 +64,8 @@ public class MainTest {
         c.rape = 5;
         c.robbery = 10;
         c.assault = 12;
-        Main.insertCrime(con, c);
-        Crime test = Main.selectSingle(con, 1990, "Arizona");
+        Methods.insertCrime(con, c);
+        Crime test = Methods.selectSingle(con, 1990, "Arizona");
         endConnection(con);
         assertTrue(test.name != null);
     }
@@ -76,9 +75,9 @@ public class MainTest {
         Connection con = startConnection();
         Crime p = new Crime(1, "AK","Alaska",2008,686293,4475,27,447,645,3356);
         Crime q = new Crime(1, "AK","Alaska",2008,686293,4475,27,447,645,3356);
-        Main.insertCrime(con, p);
-        Main.insertCrime(con, q);
-        ArrayList<Crime> crimes = Main.selectAll(con);
+        Methods.insertCrime(con, p);
+        Methods.insertCrime(con, q);
+        ArrayList<Crime> crimes = Methods.selectAll(con);
         endConnection(con);
 
         assertTrue(crimes.size() == 2);
@@ -92,21 +91,20 @@ public class MainTest {
         u.username = "Matt";
         u.password = "123";
         u.ip = "2";
-        Main.insertUser(con, u);
-        User test = Main.selectUser(con, "Matt");
+        Methods.insertUser(con, u);
+        User test = Methods.selectUser(con, "Matt");
         endConnection(con);
 
         assertTrue(test.username == "Matt");
     }
-
 
     @Test
     public void selectUser() throws SQLException {
         Connection con = startConnection();
         User user = new User("Test", "test", "24.24.24.24");
         System.out.println(user);
-        Main.insertUser(con, user);
-        User u = Main.selectUser(con, "Test");
+        Methods.insertUser(con, user);
+        User u = Methods.selectUser(con, "Test");
         endConnection(con);
 
         assertTrue(u != null);
@@ -116,17 +114,39 @@ public class MainTest {
     public void insertMsg() throws SQLException {
         Connection con = startConnection();
         User u= new User ("Matt", "123", "ip");
-        Main.insertUser(con, u);
+        Methods.insertUser(con, u);
         LocalDateTime time = LocalDateTime.now();
         Crime c = new Crime();
-        Main.insertCrime(con, c);
-        Main.insertMsg(con, 1, 1, 1, "Rekt by Java", 1, time);
-        Message message = Main.selectMsg(con, 1);
+        Methods.insertCrime(con, c);
+        Methods.insertMsg(con, 1, 1, 1, "Rekt by Java", 1, time);
+        Message message = Methods.selectMsg(con, 1);
         endConnection(con);
 
         assertTrue(message != null);
     }
 
+    @Test
+    public void selectMsg() throws SQLException {
+        Connection con = startConnection();
+        LocalDateTime time = LocalDateTime.now();
+        Message message = new Message();
+        System.out.println(message);
+        Methods.insertMsg(con, 1, 1, 1, "Hello", 1, time);
+        Message m = Methods.selectMsg(con, 1);
+        endConnection(con);
 
+        assertTrue(m != null);
+    }
 
+    @Test
+    public void selectMsgs() throws SQLException {
+        Connection con = startConnection();
+        LocalDateTime time = LocalDateTime.now();
+        Methods.insertMsg(con, 1, 1, 1, "Hello", 1, time);
+        Methods.insertMsg(con, 2, 1, 2, "Hi", 2, time);
+        ArrayList<Message> messages = Methods.selectMsgs(con, 1);
+        endConnection(con);
+        assertTrue(messages.size() == 2);
+
+    }
 }

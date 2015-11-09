@@ -1,6 +1,7 @@
 package com.theironyard;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by MattBrown on 11/6/15.
@@ -13,6 +14,9 @@ public class Message {
     String text;
     int rating;
     LocalDateTime timestamp;
+    String formattedTimestamp;
+
+    String username;
 
     public Message(){
 
@@ -43,6 +47,10 @@ public class Message {
     public int getRating() {
 
         return rating;
+    }
+
+    public String getFormattedTimestamp() {
+        return timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME);
     }
 
     public Message(int id, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) {
