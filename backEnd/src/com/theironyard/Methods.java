@@ -16,6 +16,7 @@ public class Methods {
         stm.execute("DROP TABLE crime");
         stm.execute("DROP TABLE users");
         stm.execute("DROP TABLE messages");
+        stm.execute("DROP TABLE msgs");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
