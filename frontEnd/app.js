@@ -14,6 +14,16 @@ var statsPage = {
 
   },
   initEvents: function(){
+    // LOG IN FUNCTIONALITY
+      $('#logInButton').on('click', function(event) {
+        event.preventDefault();
+        console.log("login clicked");
+         $('.statMain').removeClass('hidden');
+         $('.loginPage').addClass('hidden');
+         $('#lineChart').removeClass('hidden');
+
+    }),
+
     //*****Login page that will then bring up Home page - THECLICKHIDDENFUNCTION****
     $('#stateYearButton').on('click', function(event){
       console.log("this is happening - initialbutton");
@@ -29,21 +39,21 @@ var statsPage = {
           console.log("SUCCESS: " + state + year, JSON.parse(crime));
           stateCrimeData = JSON.parse(crime);
 
-          var graphArr = [];
-          var graphState = _.each(stateCrimeData, function(el, idx, array) {
-            if(state == el.abbrev) {
-                // for(var i = 0; i < stateCrimeData; )
-                title = el.name;
-                return title;
-
-            }
-          });
+          // var graphArr = [];
+          // var graphState = _.each(stateCrimeData, function(el, idx, array) {
+          //   if(state == el.abbrev) {
+          //       // for(var i = 0; i < stateCrimeData; )
+          //       title = el.name;
+          //       return title;
+          //
+          //   }
+          // });
 
 
 
           var states = _.each(stateCrimeData, function(el, idx, array) {
-            if(state == el.abbrev && year == el.year) {
-              var stateStats = {population: el.population, total: el.total, name: el.name, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
+            if(state == el.name && year == el.year) {
+              var stateStats = {population: el.population, total: el.total, name: el.abbrev, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
               statsPage.loadStats(stateStats);
               // statsPage.loadGraphs(stateStats);
             }
@@ -53,7 +63,7 @@ var statsPage = {
         console.log("FAILURE");
       }
     });
-  });
+});
 },
 
 
@@ -66,8 +76,8 @@ var statsPage = {
         crimeData = JSON.parse(crime);
         var national = _.each(crimeData, function(el, idx, arr) {
 
-          if(el.name === "National" && el.year === 2012){
-            var nationalStats = {population: el.population, total: el.total, name: el.name, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
+          if(el.abbrev === "National" && el.year === 2012){
+            var nationalStats = {population: el.population, total: el.total, name: el.abbrev, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
             statsPage.loadStats(nationalStats);
             // statsPage.loadGraphs(nationalStats);
           }
@@ -94,28 +104,6 @@ var statsPage = {
   // },
 
   // }
-
-  createUser: function(userData) {
-   $('.login').on('click', 'button[name="submit"]', function (){
-     var userData = {
-       userName: input[name="username"].val(),
-       password: input[name="password"].val()
-     };
-
-   $.ajax({
-     method: 'POST',
-     url: "/login",
-     data: userData,
-     success: function() {
-       console.log("SUCCESS");
-     },
-     failure: function() {
-       console.log("FAILURE");
-     }
-   });
- });
-},
-
 
   url: "/home",
 
