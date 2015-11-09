@@ -13,10 +13,10 @@ public class Methods {
     // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
-        stm.execute("DROP TABLE crime");
-        stm.execute("DROP TABLE users");
-        stm.execute("DROP TABLE messages");
-        stm.execute("DROP TABLE msgs");
+        stm.execute("DROP TABLE IF EXISTS crime");
+        stm.execute("DROP TABLE IF EXISTS users");
+        stm.execute("DROP TABLE IF EXISTS messages");
+        stm.execute("DROP TABLE IF EXISTS msgs");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
         stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
@@ -24,6 +24,7 @@ public class Methods {
         stm.execute("CREATE TABLE IF NOT EXISTS msgs (id IDENTITY, username VARCHAR, timestamp TIMESTAMP, text VARCHAR)");
     }
 
+    // TEST PASSED
     // Inserting individual crime's into SQL Table "crime"
     public static void insertCrime(Connection con, Crime c) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -54,6 +55,7 @@ public class Methods {
         }
     }
 
+    // TEST PASSED
     // Method to parse CSV dump and populate database.
     public static void populateDatabase(Connection con) throws SQLException {
         String fileContent = readFile("backEnd/dump.csv");
@@ -69,6 +71,7 @@ public class Methods {
         }
     }
 
+    // TEST PASSED
     // Method to insert user into SQL Table "users"
     public static void insertUser(Connection con, User u) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?)");
@@ -81,6 +84,7 @@ public class Methods {
         stm.execute();
     }
 
+    // TEST PASSED
     // Method to select a user from SQL.
     public static User selectUser(Connection con, String username) throws SQLException {
         User user = null;
@@ -99,6 +103,7 @@ public class Methods {
         return user;
     }
 
+
     // Method to update user's post count.
     public static void editPostCount(Connection con, User u) throws SQLException {
         PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id = ?");
@@ -115,7 +120,7 @@ public class Methods {
         stm.executeUpdate();
     }
 
-
+    // TEST PASSED
     // Method for inserting a new message to a crime object.
     public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
@@ -128,12 +133,13 @@ public class Methods {
         stm.execute();
     }
 
+    // TEST PASSED
     // Selects all messages associated to the crime record.
     public static ArrayList<Message> selectMsgs(Connection con, int crimeId) throws SQLException {
 
         ArrayList<Message> selectMsgs = new ArrayList<>();
         PreparedStatement stm = con.prepareStatement(
-                "SELECT * FROM messages WHERE messages.crimeId = ?");
+                "SELECT * FROM messages WHERE messages.crimeId = ? ORDER BY timestamp");
         stm.setInt(1, crimeId);
         ResultSet results = stm.executeQuery();
         while (results.next()) {
@@ -150,9 +156,11 @@ public class Methods {
 
     }
 
+    // TEST PASSED
+    // Selects a specific message. Used for updating text/rating.
     public static Message selectMsg(Connection con, int id) throws SQLException {
         Message message = null;
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages WHERE messages.msgId = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages WHERE messages.msgId = ? ORDER BY timestamp");
         stm.setInt(1, id);
         ResultSet results = stm.executeQuery();
         if (results.next()) {
@@ -287,7 +295,7 @@ public class Methods {
     }
 
     // Inserting into faux-message board.
-    public static void insMsg(Connection con, Message m, User u) throws SQLException {
+    public static void insMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO msgs VALUES (NULL, ?, ?, ?)");
         stm.setString(1, m.username);
         stm.setTimestamp(2, Timestamp.valueOf(m.timestamp));

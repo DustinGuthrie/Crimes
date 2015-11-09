@@ -2,11 +2,8 @@ package com.theironyard;
 import jodd.json.JsonSerializer;
 import spark.Session;
 import spark.Spark;
-import java.io.File;
-import java.io.FileReader;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -286,11 +283,11 @@ public class Main {
                     String text = request.queryParams("text");
                     String time = request.queryParams("timestamp");
                     Message m = new Message();
-                    User u = new User();
-                    u.username = username;
+                    User u = Methods.selectUser(con, username);
+                    m.userId = u.id;
                     m.text = text;
                     m.timestamp = LocalDateTime.parse(time);
-                    Methods.insMsg(con, m, u);
+                    Methods.insMsg(con, m);
 
                     session.attribute("username", username);
                     response.redirect("/home");
