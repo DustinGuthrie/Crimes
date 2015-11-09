@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Main {
 
-    // SQL Table Creation
+    // SQL Table Creation (TEST PASSED)
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
@@ -22,7 +22,7 @@ public class Main {
         stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, timestamp TIMESTAMP)");
     }
 
-    // Inserting individual crime's into SQL Table "crime"
+    // Inserting individual crime's into SQL Table "crime" (TEST PASSED)
     public static void insertCrime(Connection con, Crime c) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO crime VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         stm.setString(1, c.abbrev);
@@ -38,7 +38,7 @@ public class Main {
 
     }
 
-    // Method used to read CSV dump.
+    // Method used to read CSV dump. (TEST PASSED)
     static String readFile(String fileName) {
         File f = new File(fileName);
         try {
@@ -52,7 +52,7 @@ public class Main {
         }
     }
 
-    // Method to parse CSV dump and populate database.
+    // Method to parse CSV dump and populate database. (TEST PASSED)
     public static void populateDatabase(Connection con) throws SQLException {
         String fileContent = readFile("backEnd/dump.csv");
 
@@ -67,7 +67,7 @@ public class Main {
         }
     }
 
-    // Method to insert user into SQL Table "users"
+    // Method to insert user into SQL Table "users" (TEST PASSED)
     public static void insertUser(Connection con, User u) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?)");
         stm.setString(1, u.username);
@@ -79,7 +79,7 @@ public class Main {
         stm.execute();
     }
 
-    // Method to select a user from SQL.
+    // Method to select a user from SQL. (TEST PASSED)
     public static User selectUser(Connection con, String username) throws SQLException {
         User user = null;
         PreparedStatement stm = con.prepareStatement("SELECT * FROM users WHERE username = ?");
@@ -97,7 +97,7 @@ public class Main {
         return user;
     }
 
-    // Method to update user's post count.
+    // Method to update user's post count. (CANT TEST)
     public static void editPostCount(Connection con, User u) throws SQLException {
         PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id = ?");
         stm.setInt(1, u.postCount);
@@ -105,7 +105,7 @@ public class Main {
         stm.executeUpdate();
     }
 
-    // Method to ban user.
+    // Method to ban user. (TEST PASSED)
     public static void banUser(Connection con, String username) throws SQLException {
         PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET access = false WHERE username = ?");
         stm.setString(1, username);
@@ -113,7 +113,7 @@ public class Main {
     }
 
 
-    // Method for inserting a new message to a crime object.
+    // Method for inserting a new message to a crime object. (TEST PASSED)
     public static void insertMsg(Connection con, int userId, int crimeId, int msgId, String text, int rating, LocalDateTime timestamp) throws SQLException {
         PreparedStatement stm = con.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?, ?, ?, ?)");
         stm.setInt(1, userId);
@@ -125,7 +125,7 @@ public class Main {
         stm.execute();
     }
 
-    //
+    //Method for selecting multiple message (TEST PASSED)
     public static ArrayList<Message> selectMsgs(Connection con, int crimeId) throws SQLException {
 
         ArrayList<Message> selectMsgs = new ArrayList<>();
@@ -147,9 +147,10 @@ public class Main {
 
     }
 
+    //Method for selecting a single message (TEST PASSED)
     public static Message selectMsg(Connection con, int id) throws SQLException {
         Message message = null;
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages WHERE messages.msgId = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM messages WHERE messages.id = ?");
         stm.setInt(1, id);
         ResultSet results = stm.executeQuery();
         if (results.next()) {
@@ -164,14 +165,14 @@ public class Main {
         return message;
     }
 
-    // Method for deleting a message.
-    public static void deleteMsg(Connection con, int msgId) throws SQLException {
-        PreparedStatement stmt = con.prepareStatement("DELETE FROM message WHERE msgId = ?");
-        stmt.setInt(1, msgId);
+    // Method for deleting a message. (TEST PASSED)
+    public static void deleteMsg(Connection con, int id) throws SQLException {
+        PreparedStatement stmt = con.prepareStatement("DELETE FROM message WHERE id = ?");
+        stmt.setInt(1, id);
         stmt.execute();
     }
 
-    // Method for an Admin deleting a message.
+    // Method for an Admin deleting a message. (CANT TEST)
     public static void adminDeleteMsg(Connection con, int msgId, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
                 "UPDATE message SET text = ?, rating = ?, userId = ?, timestamp = ? WHERE msgId = ?");
@@ -183,18 +184,18 @@ public class Main {
         stm.executeUpdate();
     }
 
-    // Method for editing a message & it's rating.  Keep's new time.
+    // Method for editing a message & it's rating.  Keep's new time. (TEST PASSED)
     public static void editMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
-                "UPDATE message SET text = ?, timestamp = ? WHERE msgId = ?");
+                "UPDATE messages SET text = ?, timestamp = ? WHERE msgId = ?");
         stm.setString(1, m.text);
-        stm.setInt(2, m.msgId);
         stm.setTimestamp(3, Timestamp.valueOf(m.timestamp));
+        stm.setInt(2, m.msgId);
 
         stm.executeUpdate();
     }
 
-    // Selecting an entire State's listing of crimes for all years.
+    // Selecting an entire State's listing of crimes for all years. (WORKS)
     public static ArrayList<Crime> selectByName(Connection conn, String name) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE name = ?");
         stm.setString(1, name);
@@ -216,7 +217,7 @@ public class Main {
         return crimes;
     }
 
-    // Selecting ALL crimes from the SQL table.
+    // Selecting ALL crimes from the SQL table. (WORKS)
     public static ArrayList<Crime> selectAll(Connection conn) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime");
         ArrayList<Crime> crimes = new ArrayList();
@@ -237,7 +238,7 @@ public class Main {
         return crimes;
     }
 
-    // Selecting crimes strictly for one year from one state.
+    // Selecting crimes strictly for one year from one state. (TEST PASSED)
     public static Crime selectSingle(Connection conn, int year, String name) throws SQLException {
         Crime crime = null;
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ? AND name = ?");
@@ -259,7 +260,7 @@ public class Main {
         return crime;
     }
 
-    // Selecting all crime's for all state's for a particular year.
+    // Selecting all crime's for all state's for a particular year. (WORKS)
     public static ArrayList<Crime> selectYears(Connection conn, int year) throws SQLException {
         ArrayList<Crime> crimes = new ArrayList();
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE year = ?");

@@ -3,7 +3,6 @@ import org.junit.Test;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -99,7 +98,6 @@ public class MainTest {
         assertTrue(test.username == "Matt");
     }
 
-
     @Test
     public void selectUser() throws SQLException {
         Connection con = startConnection();
@@ -127,6 +125,28 @@ public class MainTest {
         assertTrue(message != null);
     }
 
+    @Test
+    public void selectMsg() throws SQLException {
+        Connection con = startConnection();
+        LocalDateTime time = LocalDateTime.now();
+        Message message = new Message();
+        System.out.println(message);
+        Main.insertMsg(con, 1, 1, 1, "Hello", 1, time);
+        Message m = Main.selectMsg(con, 1);
+        endConnection(con);
 
+        assertTrue(m != null);
+    }
 
+    @Test
+    public void selectMsgs() throws SQLException {
+        Connection con = startConnection();
+        LocalDateTime time = LocalDateTime.now();
+        Main.insertMsg(con, 1, 1, 1, "Hello", 1, time);
+        Main.insertMsg(con, 2, 1, 2, "Hi", 2, time);
+        ArrayList<Message> messages = Main.selectMsgs(con, 1);
+        endConnection(con);
+        assertTrue(messages.size() == 2);
+
+    }
 }
