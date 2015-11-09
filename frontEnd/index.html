@@ -9,38 +9,47 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
 
-<script type="text/javascript">
-   $(function () {
-       $('#lineChart').highcharts({
-           title: {
-             text: 'National Data',
-           },
-           subtitle: {
-             text: 'Violent Crime'
-           },
-           xAxis: {
-               categories: ['1960', '1970', '1980', '1990', '2000', '2010', '2012']
-           },
-           plotOptions: {
-           line: {
-               dataLabels: {
-                   enabled: true
-               },
-               enableMouseTracking: true
-             }
-           },
-           series: [{
-               name: 'Murder',
-               data: [100000, 200000, 350000, 250000, 110000, 200000, 100000, 200000, 350000, 250000, 110000, 200000]
-             },
-             {
-               name: 'Rape',
-               data: [50000, 60000, 80000, 75000, 43000, 32000, 71000, 30000, 35000, 25000, 11000, 20000],
-               lineWidth: 2
-           }]
-       });
-   });
- </script>
+    <script type="text/javascript">
+      $(function () {
+          $('#lineChart').highcharts({
+              title: {
+                text: 'National Data',
+              },
+              subtitle: {
+                text: 'Violent Crime'
+              },
+              xAxis: {
+                  categories: ['1960', '1970', '1980', '1990', '2000', '2010', '2012']
+              },
+              plotOptions: {
+              line: {
+                  dataLabels: {
+                      enabled: true
+                  },
+                  enableMouseTracking: true
+                }
+              },
+              series: [{
+                  name: 'Robbery',
+                  data: [107840, 349860, 565840, 639271, 408016, 369089, 354522]
+                },
+                {
+                  name: 'Rape',
+                  data: [17190, 37990, 82990, 102555, 90178, 85593, 84376]
+                  },
+                {
+                    name: 'Murder',
+                    data: [9110, 16000, 23040, 23438, 15586, 14722, 14827]
+                  },
+                {
+                  name: 'Assault',
+                  data: [154320, 334970, 672650, 1054863, 911706, 781844, 760739],
+                  lineWidth: 2
+              }]
+          });
+      });
+    </script>
+
     <script>
     // Home page template here
     </script>
@@ -260,8 +269,12 @@
 
           <!-- *****This is where the template will swap data in and out***** -->
           <div class="col-md-8 noPadding statMain hidden">
-            <div class="col-md-8" id="lineChart" style="width:700px; height:395px;"></div>
+            <!-- <div class="col-md-8" id="lineChart" style="width:700px; height:395px;"></div> -->
           </div>
+
+
+          <div class="col-md-8 hidden" id="lineChart" style="width:700px; height:395px;"></div>
+
 
           <div class="col-md-2 noPadding"><img style="height: 680px; margin-left: 15px;" src="http://images4.alphacoders.com/346/34666.jpg"/></div>
         </div>
