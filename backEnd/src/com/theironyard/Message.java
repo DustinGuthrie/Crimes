@@ -14,6 +14,8 @@ public class Message {
     int rating;
     LocalDateTime timestamp;
 
+    String username;
+
     public Message(){
 
     }
