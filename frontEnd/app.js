@@ -24,6 +24,20 @@ var statsPage = {
 
     }),
 
+    $('#chatHere').on('click', function(event) {
+     event.preventDefault();
+     var chatMessage = {
+       content: $('textarea[name="chat"]').val(),
+       username: "username"
+     };
+     var chatTemplate = _.template('#chatTmpl');
+     var chatHTML = chatTemplate(chatMessage);
+     $('.responses').prepend(chatHTML);
+     console.log(chatHTML);
+   }),
+
+
+
     //*****Login page that will then bring up Home page - THECLICKHIDDENFUNCTION****
     $('#stateYearButton').on('click', function(event){
       console.log("this is happening - initialbutton");
@@ -48,13 +62,21 @@ var statsPage = {
           //
           //   }
           // });
-
-
-
           var states = _.each(stateCrimeData, function(el, idx, array) {
-            if(state == el.name && year == el.year) {
-              var stateStats = {population: el.population, total: el.total, name: el.abbrev, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
-              statsPage.loadStats(stateStats);
+            if(state == "CO" && year <= 2012) {
+              var coloradoStats = {population: "Cant Remember", total: 0, name: "Colorado", robbery: 0, rape: 0, assault: 0, murder: 0};
+              statsPage.loadStats(coloradoStats);
+              $('#lineChart').addClass('hidden');
+              $('#chat').addClass('hidden');
+              $('#colorado').removeClass('hidden');
+              }
+            else if(state == el.name && year == el.year) {
+                  var stateStats = {population: el.population, total: el.total, name: el.abbrev, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
+                  statsPage.loadStats(stateStats);
+              $('#lineChart').addClass('hidden');
+              $('#colorado').addClass('hidden');
+              $('#chat').removeClass('hidden');
+
               // statsPage.loadGraphs(stateStats);
             }
           });
@@ -63,7 +85,7 @@ var statsPage = {
         console.log("FAILURE");
       }
     });
-});
+  });
 },
 
 
