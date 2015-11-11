@@ -111,7 +111,7 @@
     </script>
 
   <!-- Chat script   -->
-  <script type="text/html" id="chatTmpl">
+    <script type="text/html" id="chatTmpl">
        <article class="newChat">
          <h3> <%= username %> </h3> <br>
          <p> <%= content %> </p>
@@ -277,9 +277,11 @@
 
             <section>
               <form action="login" method="post" id="logIn">
-                <input type="text" name="username" placeholder="Username" required><br><br>
-                <input type="password" name="password" placeholder="Password" required><br><br>
+                <input type="text" name="username" placeholder="Username" id="loginUserName" required><br><br>
+                <input type="password" name="password" placeholder="Password" id="password" required><br><br>
                 <button id="logInButton" type="submit" name="userSubmit">Submit</button>
+                <button id="guestUser" type="submit" name="guestSubmit">LogIn As Guest</button>
+
               </form>
             </section>
           </div>
@@ -297,12 +299,17 @@
           <div class="col-md-8 hidden" id="chat"  style="margin-left:150px; padding-top: 15px; height: 300px;">
             <!-- <img src="http://www.theministryrookie.com/wp-content/uploads/2013/04/stephencolbertcolbertreport.jpg" style="width:700px; height:325px; margin-top: 30px; margin-left: 160px;"> -->
             <!-- <img src="https://s-media-cache-ak0.pinimg.com/originals/85/27/a1/8527a1351d60703b5db139a9c3cb0e0d.jpg" style="width:700px; height:325px; margin-top: 30px; margin-left: 160px;"> -->
-              <div class="responses hidden" style="margin-left:150px; padding-top: 15px; height: 300px;">
-
+              <div class="responses " style="margin-left:150px; padding-top: 15px; height: 300px;">
               </div>
-              <textarea name="chat" rows="5" cols="100"></textarea><br>
-             <button id="chatHere" type="submit" name="Submit Msg" class="btn btn-primary" style="color:white; width:25%;">Submit Message</button>
+                <textarea name="chat" rows="5" cols="100"></textarea><br>
+                <button id="chatHere" type="submit" name="Submit Msg" class="btn btn-primary" style="color:white; width:25%;">Submit Message</button>
           </div>
+
+          <!-- scruff mcgruff -->
+           <!-- <div class="col-md-8 hidden" id="mcgruff"  style="margin-left:150px; padding-top: 15px; height: 150px;"> -->
+            <!-- <img src="http://www.theministryrookie.com/wp-content/uploads/2013/04/stephencolbertcolbertreport.jpg" style="width:700px; height:325px; margin-top: 30px; margin-left: 160px;"> -->
+            <!-- <img src="https://s-media-cache-ak0.pinimg.com/originals/85/27/a1/8527a1351d60703b5db139a9c3cb0e0d.jpg" style="width:700px; height:325px; margin-top: 30px; margin-left: 160px;"> -->
+          <!-- </div> -->
 
           <!-- Colorado Funny -->
           <div class="col-md-8 hidden" id="colorado">
