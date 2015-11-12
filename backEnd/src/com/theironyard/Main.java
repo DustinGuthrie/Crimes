@@ -24,32 +24,13 @@ public class Main {
                 ((request, response) -> {
                     Session session = request.session();
                     String username = session.attribute("username");
-
+                    request.headers("username");
                     ArrayList<Crime> crime = Methods.selectAll(con);
-//                    Crime c = new Crime();
-//                    c.name = "USER"+(username);
-//                    crime.add(c);
                     JsonSerializer serializer = new JsonSerializer();
-//                    response.header("username", username);
-                    response.redirect("/");
+                    response.header("username", username);
                     return serializer.serialize(crime);
                 })
         );
-
-//        Spark.get(
-//                "/test",
-//                ((request, response) -> {
-//                    Session session = request.session();
-//                    String username = session.attribute("username");
-//                    User u = new User();
-//                    u.username = username;
-//                    HashMap <User, ArrayList<Crime>> map = new HashMap();
-//                    ArrayList<Crime> crime = Methods.selectAll(con);
-//                    map.put(u, crime);
-//                    JsonSerializer serializer = new JsonSerializer();
-//                    return serializer.serialize(map);
-//                })
-//        );
 
         // Login authentication.
         Spark.post(
@@ -79,7 +60,7 @@ public class Main {
                     Session session = request.session();
                     session.attribute("username", username);
                     response.header("username", username);
-                    response.redirect("/");
+                    response.redirect("/home");
                     return "";
                 })
         );
@@ -112,7 +93,8 @@ public class Main {
                         System.out.println(e.getMessage());
                     }
 
-                  return "";
+                    response.header("crimeId", id);
+                    return "";
                 })
         );
 
@@ -144,10 +126,11 @@ public class Main {
                     Methods.insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
                     Methods.editPostCount(con, u);
 
-                    session.attribute("username", username);
-                    session.attribute("crimeId", c.id);
 
-                    response.redirect("/home");
+
+                    response.header("crimeId", String.valueOf(c.id));
+                    response.header("username", username);
+                    response.redirect("/");
                     return "";
 
                 }
@@ -180,10 +163,9 @@ public class Main {
                     Methods.editPostCount(con, u);
                     Methods.insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
 
-                    session.attribute("username", username);
-                    session.attribute("crimeId", c.id);
-
-                    response.redirect("/home");
+                    response.header("crimeId", String.valueOf(c.id));
+                    response.header("username", username);
+                    response.redirect("/");
                     return "";
                 })
 
@@ -213,9 +195,10 @@ public class Main {
                         System.out.println(e.getMessage());
                     }
 
-                    session.attribute("crimeId", me.crimeId);
 
-                    response.redirect("/home");
+                    response.header("msgId", String.valueOf(me.msgId));
+                    response.header("username", username);
+                    response.redirect("/");
                     return "";
                 })
         );
@@ -258,6 +241,8 @@ public class Main {
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
+
+                    response.redirect("/");
                     return "";
                 })
         );
@@ -268,6 +253,7 @@ public class Main {
                     String name = request.queryParams("name");
                     ArrayList<Crime> crime = Methods.selectByName(con, name);
                     JsonSerializer serializer = new JsonSerializer();
+                    response.redirect("/");
                     return serializer.serialize(crime);
                 })
         );
@@ -290,8 +276,8 @@ public class Main {
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
-
-                    response.redirect("/home");
+                    response.header("username", username);
+                    response.redirect("/");
                     return "";
                 })
 
@@ -311,8 +297,8 @@ public class Main {
                     m.timestamp = LocalDateTime.parse(time);
                     Methods.insMsg(con, m);
 
-                    session.attribute("username", username);
-                    response.redirect("/home");
+                    response.header("username", username);
+                    response.redirect("/");
                     return "";
                 })
 
@@ -325,6 +311,8 @@ public class Main {
                     String username = session.attribute("username");
                     ArrayList<Message> msgs = Methods.getMsg(con);
                     JsonSerializer serializer = new JsonSerializer();
+                    response.header("username", username);
+                    response.redirect("/");
                     return serializer.serialize(msgs);
                 })
         );
