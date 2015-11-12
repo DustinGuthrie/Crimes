@@ -159,7 +159,7 @@ var statsPage = {
   setUser: function(name, password){
     $.ajax({
       method: "POST",
-      url: 'login',
+      url: '/login',
       data: {username: name, password: password},
       success: function(data) {
         if (data) {
