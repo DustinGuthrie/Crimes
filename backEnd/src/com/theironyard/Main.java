@@ -5,7 +5,6 @@ import spark.Spark;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Agronis on 11/5/15.
@@ -25,12 +24,13 @@ public class Main {
                 ((request, response) -> {
                     Session session = request.session();
                     String username = session.attribute("username");
-                    User u = new User();
-                    u.username = username;
-                    HashMap <User, ArrayList<Crime>> map = new HashMap();
+
                     ArrayList<Crime> crime = Methods.selectAll(con);
-                    map.put(u, crime);
+//                    Crime c = new Crime();
+//                    c.name = "USER"+(username);
+//                    crime.add(c);
                     JsonSerializer serializer = new JsonSerializer();
+                    response.header("username", username);
                     return serializer.serialize(crime);
                 })
         );
@@ -42,7 +42,7 @@ public class Main {
 //                    String username = session.attribute("username");
 //                    User u = new User();
 //                    u.username = username;
-//
+//                    HashMap <User, ArrayList<Crime>> map = new HashMap();
 //                    ArrayList<Crime> crime = Methods.selectAll(con);
 //                    map.put(u, crime);
 //                    JsonSerializer serializer = new JsonSerializer();
@@ -77,7 +77,7 @@ public class Main {
                     Session session = request.session();
                     session.attribute("username", username);
 
-                    response.redirect("/home");
+                    response.header("username", username);
                     return "";
                 })
         );

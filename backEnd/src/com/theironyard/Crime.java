@@ -13,6 +13,7 @@ public class Crime {
     int rape;
     int robbery;
     int assault;
+    String user;
 
     public Crime() {
 
