@@ -36,3 +36,44 @@ button[name="userSubmit"] {
 .col-md-8, .col-md-2 {
   display: inline-block;
 }
+
+// LINE CHART
+#lineChart {
+  width: 45%;
+  height: 325px;
+  margin-top: 30px;
+  margin-left: 160px;
+}
+
+// CHAT AREA
+#chat {
+  margin: 0 auto;
+  padding-top: 15px;
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.responses {
+  margin: 0 auto;
+  padding-top: 15px;
+  height: 200px;
+  overflow-y: scroll;
+}
+
+.newChat {
+  border: 1px solid black;
+  button {
+    float: right;
+    width: 20%;
+  }
+}
+
+.replyChat {
+  border: 1px solid black;
+  margin-left: 15px;
+  
+  button {
+    float: right;
+    width: 20%;
+  }
+}
