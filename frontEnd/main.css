@@ -28,5 +28,41 @@ button[name="userSubmit"] {
   background-color: #BF0A30;
   color: white; }
 
+button[name="guestSubmit"] {
+  width: 25%;
+  background-color: #BF0A30;
+  color: white; }
+
 .col-md-8, .col-md-2 {
   display: inline-block; }
+
+#lineChart {
+  width: 45%;
+  height: 325px;
+  margin-top: 30px;
+  margin-left: 160px; }
+
+#chat {
+  margin: 0 auto;
+  padding-top: 15px;
+  height: 300px;
+  overflow-y: scroll; }
+
+.responses {
+  margin: 0 auto;
+  padding-top: 15px;
+  height: 200px;
+  overflow-y: scroll; }
+
+.newChat {
+  border: 1px solid black; }
+  .newChat button {
+    float: right;
+    width: 20%; }
+
+.replyChat {
+  border: 1px solid black;
+  margin-left: 15px; }
+  .replyChat button {
+    float: right;
+    width: 20%; }

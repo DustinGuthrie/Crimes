@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Team2 Group Project</title>
+    <title>Violent Crime Statistics</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Ubuntu|Merriweather|Oswald|Josefin+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="main.css">
@@ -13,7 +13,7 @@
       $(function () {
           $('#lineChart').highcharts({
               title: {
-                text: 'National Data',
+                text: 'US National Data',
               },
               subtitle: {
                 text: 'Violent Crime'
@@ -50,12 +50,9 @@
       });
     </script>
 
-    <script>
-    // Home page template here
-    </script>
     <script type="text/html" id="statsTmplCurrUser">
       <article class="stateCurrUser" data-index="" style="margin: 0;">
-        <div class="col-md-8 noPadding">
+        <div class="col-md-8" style="padding-left: 60px;">
           <h2 style="text-align: center; font-family: Oswald;"><%= name %></h2>
           <h4 style="text-align: center;font-family: Ubuntu; border-top: 2px solid gray; border-bottom: 2px solid gray; margin-left: 30px;"><strong>Population:&nbsp</strong><%= population %>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<strong>Total Violent Crimes:</strong> <%= total %>	</h4>
             <div class="row">
@@ -100,7 +97,7 @@
               <div class="col-md-4">
                 <h6 style="text-align: left;font-family: Oswald; font-size: 16px;"><%= assault %></h6>
               </div>
-              <div class="col-md-2 noPadding"></div>
+              <div class="col-md-1 noPadding"></div>
             </div>
           <!-- <img src="https://www.fbi.gov/news/stories/2013/september/latest-crime-stats-released/image/graphic-snapshot-of-violent-crimes-in-u.s"/ style="padding-left:150px; padding-top: 15px; height: 395px;"> -->
 
@@ -110,6 +107,29 @@
       </article>
     </script>
 
+    <!-- CHAT SCRIPT   -->
+    <script type="text/html" id="chatTmpl">
+         <article class="newChat" class="<%= state %> <%= year %>">
+           <h3> <%= username %> </h3> <br>
+           <p> <%= content %> </p>
+           <br>
+           <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+           <button type="submit" name="edit" class="btn btn-primary">Edit</button>
+           <button type="submit" name="reply" class="btn btn-info">Reply</button>
+         </article>
+       </script>
+
+     <!-- CHAT REPLY SCRIPT   -->
+     <script type="text/html" id="replyTmpl">
+          <article class="replyChat" class="<%= state %> <%= year %>">
+            <h3> <%= username %> </h3> <br>
+            <p> <%= content %> </p>
+            <br>
+            <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+            <button type="submit" name="edit" class="btn btn-primary">Edit</button>
+            <button type="submit" name="reply" class="btn btn-info">Reply</button>
+        </article>
+      </script>
 
   </head>
   <body>
@@ -123,8 +143,9 @@
           <div class="col-md-2" style="padding-top: 10px;">
               <div class="form-group">
               	<div class="col-sm-12">
-              		<select class="form-control" id="state" name="state">
+               		<select class="form-control" id="state" name="state">
               			<option value="">State</option>
+                    <option value="NAT">National</option>
               			<option value="AK">Alaska</option>
               			<option value="AL">Alabama</option>
               			<option value="AR">Arkansas</option>
@@ -252,6 +273,15 @@
         </div>
       </header>
 
+      <!-- Sidebar -->
+             <div id="sidebar-wrapper" style=" position: absolute; right: 280px; top: 60px; width: 150px; list-style: none;">
+                 <ul class="sidebar-nav" style="list-style: none;">
+                     <li class="sidebar-brand">
+                       <img style="width: 750%; margin-left: 0px;" src="http://images4.alphacoders.com/346/34666.jpg"/>
+                 </ul>
+             </div>
+
+
       <!-- MAIN SECTION - LOGIN & DATA -->
       <section class="homePage ">
 
@@ -260,30 +290,55 @@
 
             <section>
               <form action="login" method="post" id="logIn">
-                <input type="text" name="username" placeholder="Username" required><br><br>
-                <input type="password" name="password" placeholder="Password" required><br><br>
+
+                <input type="text" name="username" placeholder="Username" id="loginUserName" required><br><br>
+                <input type="password" name="password" placeholder="Password" id="password" required><br><br>
+
                 <button id="logInButton" type="submit" name="userSubmit">Submit</button>
+                <button id="guestUser" type="submit" name="guestSubmit">LogIn As Guest</button>
+
               </form>
             </section>
           </div>
 
+
           <!-- *****This is where the template will swap data in and out***** -->
-          <div class="col-md-8 noPadding statMain hidden">
-            <!-- <div class="col-md-8" id="lineChart" style="width:700px; height:395px;"></div> -->
+          <section class="statMain hidden">
+            <div class="col-md-6" style="width:45%;"></div>
+          </section>
+
+  <!-- LINE CHART -->
+          <div class="col-md-6 hidden" id="lineChart"></div>
+
+<!-- CHAT SECTION -->
+          <div class="col-md-6 hidden" id="chat">
+
+              <div class="responses hidden">
+              </div>
+
+             <textarea name="chat" rows="5" cols="100" placeholder="Enter message here..."></textarea><br>
+             <button id="chatHere" type="submit" name="Submit Msg" class="btn btn-primary" style="color:white; width:25%;">Submit Message</button>
+
+             <textarea name="reply" rows="5" cols="100" class="hidden" placeholder="Enter reply here..."></textarea><br>
+             <button id="replyHere" type="submit" name="submit reply" class="btn btn-primary hidden" style="color:white; width:25%;">Submit Reply</button>
+          </div>
+
+<!-- Colorado Funny -->
+          <div class="col-md-8 hidden" id="colorado">
+            <!-- <img src="data:image/jpeg;base64,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" style="width:700px; height:325px; margin-top: 30px; margin-left: 160px;"> -->
+            <img src="http://www.truthrevolt.org/sites/default/files/styles/content_full_width/public/field/image/articles/screen_shot_2015-09-22_at_3.28.49_pm.jpg?itok=dhFM2l4N" style="width:700px; height:325px; margin-top: 30px; margin-left: 160px;">
           </div>
 
 
-          <div class="col-md-8 hidden" id="lineChart" style="width:700px; height:395px;"></div>
 
-
-          <div class="col-md-2 noPadding"><img style="height: 680px; margin-left: 15px;" src="http://images4.alphacoders.com/346/34666.jpg"/></div>
+          <!-- <div class="col-md-2 noPadding"><img style="height: 680px; margin-left: 15px;" src="http://images4.alphacoders.com/346/34666.jpg"/></div> -->
         </div>
       </section>
 
 
-    </div>
+    <!-- </div> -->
 
-    <footer style="background-color: #BF0A30;">
+    <footer style="background-color: #BF0A30; position: relative;">
       <div class="row" style="height: 80px; padding-top: 25px;">
         <div class="col-md-4" style="text-align: justify; padding-left: 40px;">© 2015 TIY Front.Back Project</div>
         <div class="col-md-4"></div>
@@ -295,6 +350,7 @@
         <div class="col-md-1"><span class="glyphicon glyphicon-question-sign" style="font-size: 30px;"></span></div>
 
       </div>
+    </div>
 
     </footer>
 
