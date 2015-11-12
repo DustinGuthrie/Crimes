@@ -57,7 +57,7 @@ public class Main {
                     Session session = request.session();
                     session.attribute("username", username);
 
-                    response.redirect("/home");
+                    response.redirect("/");
                     return "";
                 })
         );

@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public class Methods {
 
+    // TEST PASSED
     // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
@@ -41,6 +42,7 @@ public class Methods {
 
     }
 
+    // TEST PASSED
     // Method used to read CSV dump.
     static String readFile(String fileName) {
         File f = new File(fileName);
@@ -103,10 +105,10 @@ public class Methods {
         return user;
     }
 
-
+    // TEST PASSED
     // Method to update user's post count.
     public static void editPostCount(Connection con, User u) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id = ?");
+        PreparedStatement stm = con.prepareStatement("UPDATE users SET postCount = ? WHERE id = ?");
         stm.setInt(1, u.postCount);
         stm.setInt(2, u.id);
         stm.executeUpdate();
@@ -183,6 +185,7 @@ public class Methods {
         stmt.execute();
     }
 
+    // Passed inherently by prior methods.
     // Method for an Admin deleting a message.
     public static void adminDeleteMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
@@ -207,6 +210,7 @@ public class Methods {
         stm.executeUpdate();
     }
 
+    // TEST PASSED
     // Selecting an entire State's listing of crimes for all years.
     public static ArrayList<Crime> selectByName(Connection conn, String name) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE name = ?");
