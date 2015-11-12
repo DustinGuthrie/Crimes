@@ -5,6 +5,7 @@ import spark.Spark;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Agronis on 11/5/15.
@@ -22,9 +23,30 @@ public class Main {
         Spark.get(
                 "/home",
                 ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User u = new User();
+                    u.username = username;
+                    HashMap <User, ArrayList<Crime>> map = new HashMap();
                     ArrayList<Crime> crime = Methods.selectAll(con);
+                    map.put(u, crime);
                     JsonSerializer serializer = new JsonSerializer();
                     return serializer.serialize(crime);
+                })
+        );
+
+        Spark.get(
+                "/test",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User u = new User();
+                    u.username = username;
+                    HashMap <User, ArrayList<Crime>> map = new HashMap();
+                    ArrayList<Crime> crime = Methods.selectAll(con);
+                    map.put(u, crime);
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.serialize(map);
                 })
         );
 
@@ -34,7 +56,6 @@ public class Main {
                 ((request, response) -> {
                     String username = request.queryParams("username");
                     String password = request.queryParams("password");
-                    String ip = request.ip();
                     User user = Methods.selectUser(con, username);
 
                     if (username.isEmpty() || password.isEmpty()) {
@@ -48,7 +69,6 @@ public class Main {
                         if (user.password.equals("admin")) {
                             user.admin = true;
                         }
-                        user.ip = ip;
                         Methods.insertUser(con, user);
                     } else if (!password.equals(user.password) || (!user.access)) {
                         Spark.halt(403);
@@ -117,7 +137,7 @@ public class Main {
                     m.msgId = 1;
                     m.text = request.queryParams("text");
                     m.rating = 1;
-                    u.postCount = 1;
+                    u.postCount = u.postCount + 1;
                     m.timestamp = LocalDateTime.now();
                     Methods.insertMsg(con, u.id, c.id, m.msgId, m.text, m.rating, m.timestamp);
                     Methods.editPostCount(con, u);
