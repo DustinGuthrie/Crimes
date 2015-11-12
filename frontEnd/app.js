@@ -24,7 +24,7 @@ var statsPage = {
       $('#logInButton').on('click', function(event) {
         // event.preventDefault();
         console.log("login clicked");
-        $username = $('text[id="loginUserName"]').val(),
+        $username = $('text[id="username"]').val(),
         $password = $('text[id="password"]').val,
         //post ajax
         statsPage.loggedInUser = $username;
