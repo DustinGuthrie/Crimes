@@ -59,9 +59,9 @@ public class Main {
                     String password = request.queryParams("password");
                     User user = Methods.selectUser(con, username);
 
-                    if (username.isEmpty() || password.isEmpty()) {
-                        Spark.halt(403);
-                    }
+//                    if (username.isEmpty() || password.isEmpty()) {
+//                        Spark.halt(403);
+//                    }
 
                     if (user == null) {
                         user = new User();
@@ -71,9 +71,10 @@ public class Main {
                             user.admin = true;
                         }
                         Methods.insertUser(con, user);
-                    } else if (!password.equals(user.password) || (!user.access)) {
-                        Spark.halt(403);
                     }
+//                    } else if (!password.equals(user.password) || (!user.access)) {
+//                        Spark.halt(403);
+//                    }
 
                     Session session = request.session();
                     session.attribute("username", username);
