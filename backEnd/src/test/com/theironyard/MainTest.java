@@ -47,6 +47,7 @@ public class MainTest {
             crime.assault = results.getInt("assault");
             crimes.add(crime);
         }
+        System.out.println(crimes);
         endConnection(con);
     }
 
@@ -148,5 +149,25 @@ public class MainTest {
         endConnection(con);
         assertTrue(messages.size() == 2);
 
+    }
+
+    @Test
+    public void editPostCount() throws SQLException {
+        Connection con = startConnection();
+        User u= new User ("Matt", "123", "ip");
+        Methods.insertUser(con, u);
+        LocalDateTime time = LocalDateTime.now();
+        Crime c = new Crime();
+        Methods.insertCrime(con, c);
+        Methods.insertMsg(con, 1, 1, 1, "Rekt by Java", 1, time);
+        Methods.editPostCount(con, u);
+        Methods.insertMsg(con, 1, 1, 2, "Rekt by Java", 1, time);
+        Methods.editPostCount(con, u);
+        Methods.insertMsg(con, 1, 1, 3, "Rekt by Java", 1, time);
+        Methods.editPostCount(con, u);
+        User test = Methods.selectUser(con, "Matt");
+        endConnection(con);
+
+        assertFalse(test.postCount == 3);
     }
 }

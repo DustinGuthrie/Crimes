@@ -10,16 +10,13 @@ import java.util.ArrayList;
  */
 public class Methods {
 
+    // TEST PASSED
     // SQL Table Creation
     public static void createTables(Connection con) throws SQLException {
         Statement stm = con.createStatement();
-        stm.execute("DROP TABLE IF EXISTS crime");
-        stm.execute("DROP TABLE IF EXISTS users");
-        stm.execute("DROP TABLE IF EXISTS messages");
-        stm.execute("DROP TABLE IF EXISTS msgs");
         stm.execute("CREATE TABLE IF NOT EXISTS crime (id IDENTITY, abbrev VARCHAR, name VARCHAR, year INT, population INT," +
                 "total INT, murder INT, rape INT, robbery INT, assault INT)");
-        stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, ip VARCHAR, access BOOLEAN)");
+        stm.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, username VARCHAR, password VARCHAR, postCount INT, admin BOOLEAN, access BOOLEAN)");
         stm.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, userId INT, crimeId INT, msgId INT, rating INT, text VARCHAR, timestamp TIMESTAMP)");
         stm.execute("CREATE TABLE IF NOT EXISTS msgs (id IDENTITY, username VARCHAR, timestamp TIMESTAMP, text VARCHAR)");
     }
@@ -41,6 +38,7 @@ public class Methods {
 
     }
 
+    // TEST PASSED
     // Method used to read CSV dump.
     static String readFile(String fileName) {
         File f = new File(fileName);
@@ -58,28 +56,31 @@ public class Methods {
     // TEST PASSED
     // Method to parse CSV dump and populate database.
     public static void populateDatabase(Connection con) throws SQLException {
-        String fileContent = readFile("backEnd/dump.csv");
 
-        String[] lines = fileContent.split("\r");
+        ArrayList<Crime> test = selectAll(con);
+        if (test.size() != 2751) {
+            String fileContent = readFile("backEnd/dump.csv");
 
-        for (String line : lines) {
-            String[] columns = line.split(",");
-            Crime crime = new Crime(columns[0], columns[1], Integer.valueOf(columns[2]),
-                    Integer.valueOf(columns[3]), Integer.valueOf(columns[4]), Integer.valueOf(columns[5]), Integer.valueOf(columns[6]),
-                    Integer.valueOf(columns[7]), Integer.valueOf(columns[8]));
-            insertCrime(con, crime);
+            String[] lines = fileContent.split("\r");
+
+            for (String line : lines) {
+                String[] columns = line.split(",");
+                Crime crime = new Crime(columns[0], columns[1], Integer.valueOf(columns[2]),
+                        Integer.valueOf(columns[3]), Integer.valueOf(columns[4]), Integer.valueOf(columns[5]), Integer.valueOf(columns[6]),
+                        Integer.valueOf(columns[7]), Integer.valueOf(columns[8]));
+                insertCrime(con, crime);
+            }
         }
     }
 
     // TEST PASSED
     // Method to insert user into SQL Table "users"
     public static void insertUser(Connection con, User u) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement stm = con.prepareStatement("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?)");
         stm.setString(1, u.username);
         stm.setString(2, u.password);
         stm.setInt(3, u.postCount);
         stm.setBoolean(4, u.admin);
-        stm.setString(5, u.ip);
         stm.setBoolean(6, u.access);
         stm.execute();
     }
@@ -95,7 +96,6 @@ public class Methods {
             user = new User();
             user.username = res.getString("username");
             user.password = res.getString("password");
-            user.ip = res.getString("ip");
             user.admin = res.getBoolean("admin");
             user.access = res.getBoolean("access");
             user.postCount = res.getInt("postCount");
@@ -103,10 +103,10 @@ public class Methods {
         return user;
     }
 
-
+    // TEST PASSED
     // Method to update user's post count.
     public static void editPostCount(Connection con, User u) throws SQLException {
-        PreparedStatement stm = con.prepareStatement("UPDATE * FROM users SET postCount = ? WHERE id = ?");
+        PreparedStatement stm = con.prepareStatement("UPDATE users SET postCount = ? WHERE id = ?");
         stm.setInt(1, u.postCount);
         stm.setInt(2, u.id);
         stm.executeUpdate();
@@ -183,6 +183,7 @@ public class Methods {
         stmt.execute();
     }
 
+    // Passed inherently by prior methods.
     // Method for an Admin deleting a message.
     public static void adminDeleteMsg(Connection con, Message m) throws SQLException {
         PreparedStatement stm = con.prepareStatement(
@@ -207,6 +208,7 @@ public class Methods {
         stm.executeUpdate();
     }
 
+    // TEST PASSED
     // Selecting an entire State's listing of crimes for all years.
     public static ArrayList<Crime> selectByName(Connection conn, String name) throws SQLException {
         PreparedStatement stm = conn.prepareStatement("SELECT * FROM crime WHERE name = ?");
