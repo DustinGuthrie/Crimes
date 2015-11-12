@@ -30,7 +30,7 @@ public class Main {
 //                    c.name = "USER"+(username);
 //                    crime.add(c);
                     JsonSerializer serializer = new JsonSerializer();
-                    response.header("username", username);
+//                    response.header("username", username);
                     return serializer.serialize(crime);
                 })
         );
@@ -77,7 +77,8 @@ public class Main {
                     Session session = request.session();
                     session.attribute("username", username);
 
-                    response.header("username", username);
+//                    response.header("username", username);
+                    response.redirect("/home");
                     return "";
                 })
         );
