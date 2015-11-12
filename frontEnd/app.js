@@ -5,6 +5,7 @@ $(document).ready(function(){
 var title = "";
 var chatData = [];
 var currentUser = "";
+var loggedInUser = "";
 
 var statsPage = {
 
@@ -26,6 +27,8 @@ var statsPage = {
         $username = $('text[id="loginUserName"]').val(),
         $password = $('text[id="password"]').val,
         //post ajax
+        statsPage.loggedInUser = $username;
+        console.log(loggedInUser);
         statsPage.setUser($username, $password);
         $('.statMain').removeClass('hidden');
         $('.loginPage').addClass('hidden');
@@ -41,10 +44,11 @@ var statsPage = {
     $('#guestUser').on('click', function(event) {
       // event.preventDefault();
       console.log("GuestUser clicked");
-      $username = "guest",
+      $username = "Guest",
       $password = "password",
       // default value = Guest
       // default password = password
+      statsPage.loggedInUser = "Guest";
       statsPage.setUser($username, $password);
   }),
 
@@ -158,7 +162,9 @@ var statsPage = {
       url: 'login',
       data: {username: name, password: password},
       success: function(data) {
-        if (data === true) {
+        if (data) {
+          console.log("IVE BEEN SUCCESSED", data);
+          // Here we need to look at what is being sent back and determine what we want to save as variable(s)
           $('.statMain').removeClass('hidden');
           $('.loginPage').addClass('hidden');
           $('#lineChart').removeClass('hidden');
@@ -170,7 +176,7 @@ var statsPage = {
         console.log("ERROR", data);
       }
     })
-    statsPage.userName = name;
+    statsPage.loggedInUser = name;
   },
 
   // GET CHAT MESSAGES FROM SERVER
