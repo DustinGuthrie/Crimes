@@ -35,20 +35,20 @@ public class Main {
                 })
         );
 
-        Spark.get(
-                "/test",
-                ((request, response) -> {
-                    Session session = request.session();
-                    String username = session.attribute("username");
-                    User u = new User();
-                    u.username = username;
-                    HashMap <User, ArrayList<Crime>> map = new HashMap();
-                    ArrayList<Crime> crime = Methods.selectAll(con);
-                    map.put(u, crime);
-                    JsonSerializer serializer = new JsonSerializer();
-                    return serializer.serialize(map);
-                })
-        );
+//        Spark.get(
+//                "/test",
+//                ((request, response) -> {
+//                    Session session = request.session();
+//                    String username = session.attribute("username");
+//                    User u = new User();
+//                    u.username = username;
+//
+//                    ArrayList<Crime> crime = Methods.selectAll(con);
+//                    map.put(u, crime);
+//                    JsonSerializer serializer = new JsonSerializer();
+//                    return serializer.serialize(map);
+//                })
+//        );
 
         // Login authentication.
         Spark.post(
