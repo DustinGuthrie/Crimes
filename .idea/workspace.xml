@@ -6,13 +6,10 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7404beac-0258-40f8-a457-3d3f66d33e7e" name="Default" comment="Removed cataloging of User IP as it will always be 0.0.0.0.1 since we're always running from a host machine.&#10;Updated all methods/routes to reflect properly.&#10;&#10;Added a &quot;/test&quot; route for Front End so they can test receiving both Crime JSON &amp; a Username.">
+    <list default="true" id="7404beac-0258-40f8-a457-3d3f66d33e7e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Main.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/test/Crimes/com/theironyard/MainTest.class" afterPath="$PROJECT_DIR$/out/test/Crimes/com/theironyard/MainTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Message.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/Message.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java" afterPath="$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/User.class" afterPath="$PROJECT_DIR$/out/production/Crimes/com/theironyard/User.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/com/theironyard/Methods.java" afterPath="$PROJECT_DIR$/backEnd/src/com/theironyard/Methods.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backEnd/src/com/theironyard/User.java" afterPath="$PROJECT_DIR$/backEnd/src/com/theironyard/User.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Crimes.iws" />
@@ -38,8 +35,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33195877">
-              <caret line="140" column="24" selection-start-line="140" selection-start-column="23" selection-end-line="140" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.8595041">
+              <caret line="79" column="44" selection-start-line="79" selection-start-column="44" selection-end-line="79" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -64,7 +61,7 @@
         <entry file="file://$PROJECT_DIR$/backEnd/src/com/theironyard/Methods.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="107" column="81" selection-start-line="107" selection-start-column="81" selection-end-line="107" selection-end-column="81" />
+              <caret line="83" column="24" selection-start-line="83" selection-start-column="24" selection-end-line="83" selection-end-column="24" />
               <folding>
                 <element signature="method#insertCrime#0;class#Methods#0" expanded="false" />
                 <element signature="method#readFile#0;class#Methods#0" expanded="false" />
@@ -811,7 +808,19 @@
       <option name="project" value="LOCAL" />
       <updated>1447325331187</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Removed cataloging of User IP as it will always be 0.0.0.0.1 since we're always running from a host machine.&#10;Updated all methods/routes to reflect properly.&#10;&#10;Added a &quot;/test&quot; route for Front End so they can test receiving both Crime JSON &amp; a Username.&#10;&#10;Updated &quot;create message&quot; to add to post count, not just set it to 1.">
+      <created>1447335916070</created>
+      <option name="number" value="00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1447335916070</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Missed a route name..">
+      <created>1447339409312</created>
+      <option name="number" value="00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1447339409312</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -826,8 +835,8 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14676617" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24964234" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -877,7 +886,9 @@
     <MESSAGE value="Final" />
     <MESSAGE value="Minor edits before presentation." />
     <MESSAGE value="Minors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minors" />
+    <MESSAGE value="Removed cataloging of User IP as it will always be 0.0.0.0.1 since we're always running from a host machine.&#10;Updated all methods/routes to reflect properly.&#10;&#10;Added a &quot;/test&quot; route for Front End so they can test receiving both Crime JSON &amp; a Username.&#10;&#10;Updated &quot;create message&quot; to add to post count, not just set it to 1." />
+    <MESSAGE value="Missed a route name.." />
+    <option name="LAST_COMMIT_MESSAGE" value="Missed a route name.." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1444,7 +1455,7 @@
     <entry file="file://$PROJECT_DIR$/backEnd/src/com/theironyard/Methods.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="107" column="81" selection-start-line="107" selection-start-column="81" selection-end-line="107" selection-end-column="81" />
+          <caret line="83" column="24" selection-start-line="83" selection-start-column="24" selection-end-line="83" selection-end-column="24" />
           <folding>
             <element signature="method#insertCrime#0;class#Methods#0" expanded="false" />
             <element signature="method#readFile#0;class#Methods#0" expanded="false" />
@@ -1468,8 +1479,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backEnd/src/com/theironyard/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33195877">
-          <caret line="140" column="24" selection-start-line="140" selection-start-column="23" selection-end-line="140" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.8595041">
+          <caret line="79" column="44" selection-start-line="79" selection-start-column="44" selection-end-line="79" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

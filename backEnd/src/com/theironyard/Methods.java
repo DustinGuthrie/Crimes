@@ -81,7 +81,7 @@ public class Methods {
         stm.setString(2, u.password);
         stm.setInt(3, u.postCount);
         stm.setBoolean(4, u.admin);
-        stm.setBoolean(6, u.access);
+        stm.setBoolean(5, u.access);
         stm.execute();
     }
 
