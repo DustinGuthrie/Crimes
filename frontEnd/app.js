@@ -24,18 +24,18 @@ var statsPage = {
       $('#logInButton').on('click', function(event) {
         // event.preventDefault();
         console.log("login clicked");
-        $username = $('text[id="loginUserName"]').val(),
+        $username = $('text[id="username"]').val(),
         $password = $('text[id="password"]').val,
         //post ajax
         statsPage.loggedInUser = $username;
-        console.log(loggedInUser);
+        // console.log(loggedInUser);
         statsPage.setUser($username, $password);
-        $('.statMain').removeClass('hidden');
-        $('.loginPage').addClass('hidden');
-        $('#lineChart').removeClass('hidden');
-        $('#chat').removeClass('hidden');
-        $('.responses').removeClass('hidden');
-        $('#sidebar-wrapper').addClass('hidden');
+        // $('.statMain').removeClass('hidden');
+        // $('.loginPage').addClass('hidden');
+        // $('#lineChart').removeClass('hidden');
+        // $('#chat').removeClass('hidden');
+        // $('.responses').removeClass('hidden');
+        // $('#sidebar-wrapper').addClass('hidden');
         //  We need to do a post with this information
         // Then dispay in top nav bar Welcome Username!  Logout
         // statsPage.setUser($username, $password);
@@ -168,6 +168,10 @@ var statsPage = {
           $('.statMain').removeClass('hidden');
           $('.loginPage').addClass('hidden');
           $('#lineChart').removeClass('hidden');
+          $('#chat').removeClass('hidden');
+          $('.responses').removeClass('hidden');
+          $('#sidebar-wrapper').addClass('hidden');
+
         } else {
            Console.log("Something went wrong with Login")
         }
