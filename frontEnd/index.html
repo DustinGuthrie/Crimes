@@ -290,9 +290,13 @@
 
             <section>
               <form action="login" method="post" id="logIn">
-                <input type="text" name="username" placeholder="Username"><br><br>
-                <input type="password" name="password" placeholder="Password"><br><br>
+
+                <input type="text" name="username" placeholder="Username" id="loginUserName" required><br><br>
+                <input type="password" name="password" placeholder="Password" id="password" required><br><br>
+
                 <button id="logInButton" type="submit" name="userSubmit">Submit</button>
+                <button id="guestUser" type="submit" name="guestSubmit">LogIn As Guest</button>
+
               </form>
             </section>
           </div>
@@ -317,7 +321,6 @@
 
              <textarea name="reply" rows="5" cols="100" class="hidden" placeholder="Enter reply here..."></textarea><br>
              <button id="replyHere" type="submit" name="submit reply" class="btn btn-primary hidden" style="color:white; width:25%;">Submit Reply</button>
-
           </div>
 
 <!-- Colorado Funny -->

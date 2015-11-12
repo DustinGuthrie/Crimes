@@ -4,6 +4,7 @@ $(document).ready(function(){
 
 var title = "";
 var chatData = [];
+var currentUser = "";
 
 var statsPage = {
 
@@ -20,20 +21,37 @@ var statsPage = {
   initEvents: function(){
     // LOG IN FUNCTIONALITY
       $('#logInButton').on('click', function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         console.log("login clicked");
-         $('.statMain').removeClass('hidden');
-         $('.loginPage').addClass('hidden');
-         $('#lineChart').removeClass('hidden');
-         $('#chat').removeClass('hidden');
-         $('.responses').removeClass('hidden');
-         $('#sidebar-wrapper').addClass('hidden');
+        $username = $('text[id="loginUserName"]').val(),
+        $password = $('text[id="password"]').val,
+        //post ajax
+        statsPage.setUser($username, $password);
+        $('.statMain').removeClass('hidden');
+        $('.loginPage').addClass('hidden');
+        $('#lineChart').removeClass('hidden');
+        $('#chat').removeClass('hidden');
+        $('.responses').removeClass('hidden');
+        $('#sidebar-wrapper').addClass('hidden');
+        //  We need to do a post with this information
+        // Then dispay in top nav bar Welcome Username!  Logout
+        // statsPage.setUser($username, $password);
     }),
 
-    // SUBMIT CHAT MESSAGE
-    $('#chatHere').on('click', function(event) {
-    //  event.preventDefault();
-     statsPage.createNewMessage();
+    $('#guestUser').on('click', function(event) {
+      // event.preventDefault();
+      console.log("GuestUser clicked");
+      $username = "guest",
+      $password = "password",
+      // default value = Guest
+      // default password = password
+      statsPage.setUser($username, $password);
+  }),
+
+  // SUBMIT CHAT MESSAGE
+  $('#chatHere').on('click', function(event) {
+  //  event.preventDefault();
+   statsPage.createNewMessage();
    }),
 
    // OPEN REPLY TEXTAREA
@@ -73,12 +91,17 @@ var statsPage = {
             if(state == "CO" && year <= 2012) {
               var coloradoStats = {population: "Cant Remember", total: 0, name: "Colorado", robbery: 0, rape: 0, assault: 0, murder: 0};
               statsPage.loadStats(coloradoStats);
+              $('#lineChart').addClass('hidden');
+              $('#chat').addClass('hidden');
+              $('#mcgruff').addClass('hidden');
               $('#colorado').removeClass('hidden');
               }
             else if(state == el.name && year == el.year) {
                   var stateStats = {population: el.population, total: el.total, name: el.abbrev, robbery: el.robbery, rape: el.rape, assault: el.assault, murder: el.murder};
                   statsPage.loadStats(stateStats);
               $('#colorado').addClass('hidden');
+              $('#chat').removeClass('hidden');
+              $('#mcgruff').removeClass('hidden');
             }
           });
         },
@@ -126,6 +149,28 @@ var statsPage = {
       chatHTML += chatTemplate(el);
     });
     $('.responses').prepend(chatHTML);
+  },
+
+  // SET USER
+  setUser: function(name, password){
+    $.ajax({
+      method: "POST",
+      url: 'login',
+      data: {username: name, password: password},
+      success: function(data) {
+        if (data === true) {
+          $('.statMain').removeClass('hidden');
+          $('.loginPage').addClass('hidden');
+          $('#lineChart').removeClass('hidden');
+        } else {
+           Console.log("Something went wrong with Login")
+        }
+      },
+      error: function(data) {
+        console.log("ERROR", data);
+      }
+    })
+    statsPage.userName = name;
   },
 
   // GET CHAT MESSAGES FROM SERVER
