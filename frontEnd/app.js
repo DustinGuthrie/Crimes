@@ -21,25 +21,6 @@ var statsPage = {
 
   initEvents: function(){
     // LOG IN FUNCTIONALITY
-      $('#logInButton').on('click', function(event) {
-        // event.preventDefault();
-        console.log("login clicked");
-        $username = $('text[id="username"]').val(),
-        $password = $('text[id="password"]').val,
-        //post ajax
-        statsPage.loggedInUser = $username;
-        // console.log(loggedInUser);
-        statsPage.setUser($username, $password);
-        // $('.statMain').removeClass('hidden');
-        // $('.loginPage').addClass('hidden');
-        // $('#lineChart').removeClass('hidden');
-        // $('#chat').removeClass('hidden');
-        // $('.responses').removeClass('hidden');
-        // $('#sidebar-wrapper').addClass('hidden');
-        //  We need to do a post with this information
-        // Then dispay in top nav bar Welcome Username!  Logout
-        // statsPage.setUser($username, $password);
-    }),
 
     $('#guestUser').on('click', function(event) {
       // event.preventDefault();
@@ -51,6 +32,20 @@ var statsPage = {
       statsPage.loggedInUser = "Guest";
       statsPage.setUser($username, $password);
   }),
+
+      $('#logInButton').on('click', function(event) {
+        // event.preventDefault();
+        console.log("login clicked");
+        $username = $('input[id="username"]').val(),
+        $password = $('input[id="password"]').val(),
+        //post ajax
+        console.log($username);
+        console.log($password);
+        loggedInUser = $username;
+        console.log(loggedInUser);
+        statsPage.setUser($username, $password);
+    }),
+
 
   // SUBMIT CHAT MESSAGE
   $('#chatHere').on('click', function(event) {
